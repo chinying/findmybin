@@ -2,9 +2,12 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
+import Main from "./components/Main.jsx"
 
 const Index = () => {
-  return (<div>Hello React!</div>);
+  return (
+    <Main />
+  );
 };
 
 ReactDOM.render(<Index />, document.getElementById("index"));
