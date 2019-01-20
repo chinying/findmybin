@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "deck.gl": "^6.3.6",
+    "dotenv": "^6.2.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-map-gl": "^4.0.8",
     "webpack": "^4.28.4"
   },
   "devDependencies": {
