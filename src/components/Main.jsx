@@ -1,5 +1,5 @@
 import React from 'react';
-import DeckGL, {LineLayer} from 'deck.gl';
+import DeckGL, {ScatterplotLayer} from 'deck.gl';
 import ReactMapGL, {StaticMap} from 'react-map-gl';
 
 /* cannot be destructured as webpack plugin only 
@@ -17,8 +17,11 @@ const initViewState = {
   zoom: 13
 };
 
-// Data to be used by the LineLayer
-const data = [{sourcePosition: [-122.41669, 37.7853], targetPosition: [-122.41669, 37.781]}];
+const gData = require('../data/recyclingBins.json')
+
+function parseGeoJSON(geoData) {
+  return geoData.features
+}
 
 // DeckGL react component
 class Main extends React.Component {
@@ -33,14 +36,21 @@ class Main extends React.Component {
     const {controller = true} = this.props 
 
     const layers = [
-      new LineLayer({id: 'line-layer', data})
+      new ScatterplotLayer({
+        id: 'geojson',
+        data: parseGeoJSON(gData),
+        radiusScale: 10,
+        radiusMinPixels: 0.5,
+        getPosition: d => d.geometry.coordinates,
+        getColor: [255, 0, 128]
+      })
     ];
 
     return (
       <DeckGL 
         initialViewState={initViewState}
         controller={controller}
-        // layers={layers}
+        layers={layers}
       >
         {/* <StaticMap /> */}
         <ReactMapGL
