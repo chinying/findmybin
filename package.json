@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --mode development",
+    "start": "webpack-dev-server --port 9000 --mode development",
     "build": "webpack --mode production"
   },
   "dependencies": {
