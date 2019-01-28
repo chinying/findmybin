@@ -3,7 +3,7 @@ import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
 import ReactMapGL, {StaticMap} from 'react-map-gl';
 
-/* cannot be destructured as webpack plugin only 
+/* cannot be destructured as webpack plugin only
 * inserts into code where env vars are used
 */
 const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
@@ -49,7 +49,7 @@ class Main extends React.Component {
   }
 
   render() {
-    const {controller = true} = this.props 
+    const {controller = true} = this.props
 
     const icon = {
       // url: './assets/location-marker-green.png',
@@ -94,7 +94,7 @@ class Main extends React.Component {
 
       new ScatterplotLayer({
         id: 'geojson',
-        data: parseGeoJSON(this.state.recyclingBins),
+        data: this.state.recyclingBins,
         radiusScale: 10,
         radiusMinPixels: 0.5,
         getPosition: d => d.geometry.coordinates,
@@ -126,7 +126,7 @@ class Main extends React.Component {
           <div className="search-box" style={searchBoxStyle}>
             <input type="text" onChange={this.inputChangeHandler} />
           </div>
-          <DeckGL 
+          <DeckGL
             initialViewState={initViewState}
             controller={controller}
             layers={layers}
