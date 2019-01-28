@@ -38,6 +38,14 @@ class Main extends React.Component {
         this.setState({recyclingBins: resp.data})
       })
       .catch(err => { console.error(err) })
+
+    // this.fn = this.fn.bind(this)
+    this.inputChangeHandler = this.inputChangeHandler.bind(this)
+  }
+
+  inputChangeHandler(event) {
+    let searchTerm = event.target.value;
+    this.setState({searchTerm})
   }
 
   render() {
@@ -94,21 +102,46 @@ class Main extends React.Component {
       })
     ];
 
+    const sidebarStyle = {
+      width: '20%',
+      height: '100vh',
+      background: 'white',
+      zIndex: 99999
+    }
+    const flexStyle = {
+      display: 'flex'
+    }
+
+    const searchBoxStyle = {
+      zIndex: 99999,
+      position: 'absolute'
+    }
+
     return (
-      <DeckGL 
-        initialViewState={initViewState}
-        controller={controller}
-        layers={layers}
-      >
-        {/* <StaticMap /> */}
-        <ReactMapGL
-          onViewportChange={(viewport) => {
-            const {width, height, latitude, longitude, zoom} = viewport;
-            // call `setState` and use the state to update the map.
-          }}
-          mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-        />
-      </DeckGL>
+      <div style={flexStyle}>
+        <div style={sidebarStyle}>
+          results go here
+        </div>
+        <div>
+          <div className="search-box" style={searchBoxStyle}>
+            <input type="text" onChange={this.inputChangeHandler} />
+          </div>
+          <DeckGL 
+            initialViewState={initViewState}
+            controller={controller}
+            layers={layers}
+          >
+            {/* <StaticMap /> */}
+            <ReactMapGL
+              onViewportChange={(viewport) => {
+                const {width, height, latitude, longitude, zoom} = viewport;
+                // call `setState` and use the state to update the map.
+              }}
+              mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
+            />
+          </DeckGL>
+        </div>
+      </div>
     );
   }
 }
