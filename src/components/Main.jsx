@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
 import ReactMapGL, {StaticMap} from 'react-map-gl';
@@ -11,7 +12,7 @@ const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
 const initViewState = {
   longitude: 103.8198,
   latitude: 1.3521,
-  zoom: 13,
+  zoom: 12,
   pitch: 0,
   bearing: 0,
   zoom: 13
@@ -28,8 +29,15 @@ class Main extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      viewport: initViewState
+      viewport: initViewState,
+      recyclingBins: []
     }
+
+    axios.get('http://localhost:9000/assets/recyclingBins.json')
+      .then(resp => {
+        this.setState({recyclingBins: resp.data})
+      })
+      .catch(err => { console.error(err) })
   }
 
   render() {
@@ -68,17 +76,17 @@ class Main extends React.Component {
         getIcon: d => 'marker',
         getSize: d => 3,
         getColor: d => [41, 153, 80],
-        onHover: ({object, x, y}) => {
-          const tooltip = `${object.name}\n${object.address}`;
-          /* Update tooltip
-             http://deck.gl/#/documentation/developer-guide/adding-interactivity?section=example-display-a-tooltip-for-hovered-object
-          */
-        }
+        // onHover: ({object, x, y}) => {
+        //   const tooltip = `${object.name}\n${object.address}`;
+        //   /* Update tooltip
+        //      http://deck.gl/#/documentation/developer-guide/adding-interactivity?section=example-display-a-tooltip-for-hovered-object
+        //   */
+        // }
       }),
 
       new ScatterplotLayer({
         id: 'geojson',
-        data: parseGeoJSON(gData),
+        data: parseGeoJSON(this.state.recyclingBins),
         radiusScale: 10,
         radiusMinPixels: 0.5,
         getPosition: d => d.geometry.coordinates,
