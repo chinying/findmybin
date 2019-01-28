@@ -46,7 +46,15 @@ const config = {
             }
           }
         ]
-    }
+      },
+      { // images
+        test: /\.(pdf|jpg|png|gif|svg|ico)$/,
+        use: [
+          {
+            loader: 'url-loader'
+          },
+        ]
+      },
     ]
   },
   plugins: [ 
