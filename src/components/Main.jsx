@@ -1,7 +1,12 @@
 import axios from 'axios';
+import * as _ from 'lodash';
 import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
-import ReactMapGL, {StaticMap} from 'react-map-gl';
+import ReactMapGL, {StaticMap, FlyToInterpolator} from 'react-map-gl';
+
+import { sidebarStyle, flexStyle, searchBoxStyle } from '../styles'
+import { icon, iconData, layers } from '../mapComponents'
+import { search } from '../utils/geocode'
 
 /* cannot be destructured as webpack plugin only
 * inserts into code where env vars are used
@@ -15,7 +20,8 @@ const initViewState = {
   zoom: 12,
   pitch: 0,
   bearing: 0,
-  zoom: 13
+  width: 1000,
+  height: 1000
 };
 
 const gData = require('../data/recyclingBins.json')
@@ -30,92 +36,68 @@ class Main extends React.Component {
     super(props)
     this.state = {
       viewport: initViewState,
-      recyclingBins: []
+      recyclingBins: gData
     }
-
-    axios.get('http://localhost:9000/assets/recyclingBins.json')
-      .then(resp => {
-        this.setState({recyclingBins: resp.data})
-      })
-      .catch(err => { console.error(err) })
 
     // this.fn = this.fn.bind(this)
     this.inputChangeHandler = this.inputChangeHandler.bind(this)
+    this._onViewPortChange = this._onViewPortChange.bind(this)
+    this._goToViewport = this._goToViewport.bind(this)
+    this._onViewStateChange = this._onViewStateChange.bind(this);
+    this.debouncedSearch = _.debounce(this.debouncedSearch, 300)
   }
 
   inputChangeHandler(event) {
     let searchTerm = event.target.value;
     this.setState({searchTerm})
+
+    this.debouncedSearch(searchTerm)
   }
+
+  _onViewPortChange(viewport) {
+    // console.log("_viewstate", viewport)
+    this.setState({viewport: {...this.state.viewport, ...viewport}})
+  }
+
+  _goToViewport(location) {
+    console.log('GOTO VIEWPORT', location)
+    let {longitude, latitude} = location
+    this._onViewPortChange({
+      longitude,
+      latitude,
+      zoom: 15,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionDuration: 3000
+    });
+  };
+
+  debouncedSearch(term) {
+    search(term)
+    .then(resp => {
+      console.log(resp.data)
+      // use _.get
+      let firstResult = resp.data.features[0]
+      let tempState = this.state.viewport
+
+      console.log('ASJKASLDJASKL', tempState, this.state)
+      tempState.longitude = firstResult.geometry.coordinates[0]
+      tempState.latitude = firstResult.geometry.coordinates[1]
+
+      this._goToViewport(tempState)
+
+      console.log(tempState, this.state)
+    })
+    .catch(err => { console.error('error searching', err) })
+  }
+
+  _onViewStateChange({viewState}) {
+    this.setState({viewState});
+  }
+
 
   render() {
     const {controller = true} = this.props
-
-    const icon = {
-      // url: './assets/location-marker-green.png',
-      x: 0,
-      y: 0,
-      width: 128,
-      height: 128,
-      anchorY: 128,
-      mask: true
-    }
-
-    const iconData = [{coordinates: [103.892344729184, 1.31969814632643, 0]}]
-
-    const layers = [
-      new IconLayer({
-        id: 'icon-layer',
-        data: iconData,
-        pickable: true,
-        iconAtlas: 'https://raw.githubusercontent.com/uber/deck.gl/6.3-release/examples/website/icon/data/location-icon-atlas.png',
-        iconMapping: {
-          marker: {
-            x: 0,
-            y: 0,
-            width: 128,
-            height: 128,
-            anchorY: 128,
-            mask: true
-          }
-        },
-        sizeScale: 15,
-        getPosition: d => d.coordinates,
-        getIcon: d => 'marker',
-        getSize: d => 3,
-        getColor: d => [41, 153, 80],
-        // onHover: ({object, x, y}) => {
-        //   const tooltip = `${object.name}\n${object.address}`;
-        //   /* Update tooltip
-        //      http://deck.gl/#/documentation/developer-guide/adding-interactivity?section=example-display-a-tooltip-for-hovered-object
-        //   */
-        // }
-      }),
-
-      new ScatterplotLayer({
-        id: 'geojson',
-        data: this.state.recyclingBins,
-        radiusScale: 10,
-        radiusMinPixels: 0.5,
-        getPosition: d => d.geometry.coordinates,
-        getColor: [255, 0, 128]
-      })
-    ];
-
-    const sidebarStyle = {
-      width: '20%',
-      height: '100vh',
-      background: 'white',
-      zIndex: 99999
-    }
-    const flexStyle = {
-      display: 'flex'
-    }
-
-    const searchBoxStyle = {
-      zIndex: 99999,
-      position: 'absolute'
-    }
+    let { viewport } = this.state
 
     return (
       <div style={flexStyle}>
@@ -126,20 +108,25 @@ class Main extends React.Component {
           <div className="search-box" style={searchBoxStyle}>
             <input type="text" onChange={this.inputChangeHandler} />
           </div>
-          <DeckGL
-            initialViewState={initViewState}
-            controller={controller}
-            layers={layers}
-          >
-            {/* <StaticMap /> */}
             <ReactMapGL
-              onViewportChange={(viewport) => {
-                const {width, height, latitude, longitude, zoom} = viewport;
-                // call `setState` and use the state to update the map.
-              }}
+              {...viewport}
+              // onViewportChange={(viewport) => {
+              //   const {width, height, latitude, longitude, zoom} = viewport;
+              //   // call `setState` and use the state to update the map.
+              // }}
+              onViewportChange={this._onViewPortChange}
               mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-            />
-          </DeckGL>
+            >
+              <DeckGL
+                initialViewState={initViewState}
+                controller={controller}
+                layers={layers}
+
+                viewState={viewport}
+                onViewStateChange={this._onViewStateChange}
+              >
+              </DeckGL>
+            </ReactMapGL>
         </div>
       </div>
     );
