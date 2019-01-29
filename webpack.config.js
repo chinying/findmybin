@@ -5,7 +5,7 @@ const dotenv = require('dotenv')
 
 // only filter for variables in dotenv
 const env = dotenv.config().parsed;
-  
+
 const envKeys = Object.keys(env).reduce((prev, next) => {
   prev[`process.env.${next}`] = JSON.stringify(env[next]);
   return prev;
@@ -23,7 +23,7 @@ const config = {
   },
   output: {
     path: path.resolve('dist'),
-    filename: 'bundle.js' 
+    filename: 'bundle.js'
   },
   module: { // here be loaders
     rules: [
@@ -57,7 +57,7 @@ const config = {
       },
     ]
   },
-  plugins: [ 
+  plugins: [
     htmlPlugin,
     new webpack.DefinePlugin(envKeys)
   ]
