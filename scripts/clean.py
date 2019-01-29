@@ -31,12 +31,21 @@ def pairwise(iterable):
     return zip(a, b)
 
 def form_kv_from_tr(rows):
-    whitelist = set(['ADDRESSBLOCKHOUSENUMBER', 'ADDRESSBUILDINGNAME', 'ADDRESSFLOORNUMBER', 'ADDRESSPOSTALCODE', 'ADDRESSSTREETNAME', 'NAME', 'X_ADDR', 'Y_ADDR'])
+    whitelist = {
+        'ADDRESSBLOCKHOUSENUMBER': 'blk',
+        'ADDRESSBUILDINGNAME': 'building',
+        'ADDRESSFLOORNUMBER': 'floor',
+        'ADDRESSPOSTALCODE': 'postal',
+        'ADDRESSSTREETNAME': 'road',
+        'NAME': 'name',
+        'X_ADDR': 'x',
+        'Y_ADDR': 'y'
+    }
 
     _map = {}
     for pair in pairwise(rows):
         if pair[0] in whitelist:
-            _map[pair[0]] = pair[1]
+            _map[whitelist[pair[0]]] = pair[1]
     return _map
 
 if __name__ == "__main__":
@@ -52,6 +61,7 @@ if __name__ == "__main__":
     for location in locations:
         parser.feed(location['properties']['description'])
         obj = {}
+        obj['waste_type'] = 'recycling'
         obj['geometry'] = location['geometry']
         obj['properties'] = form_kv_from_tr(parser.trows)
         new_json_obj.append(obj)
