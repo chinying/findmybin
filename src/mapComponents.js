@@ -1,7 +1,7 @@
 import {ScatterplotLayer, IconLayer} from 'deck.gl';
 import * as _ from 'lodash'
 
-const gData = require('./data/recyclingBins.json')
+const gData = require('./data/combined.json')
 
 const icon = {
   // url: './assets/location-marker-green.png',
@@ -49,9 +49,9 @@ const layers = [
     // data: this.state.recyclingBins,
     data: gData,
     radiusScale: 10,
-    radiusMinPixels: 0.5,
+    radiusMinPixels: 1,
     getPosition: d => d.geometry.coordinates,
-    getColor: [255, 0, 128],
+    getColor: d => d.waste_type === 'recycling' ? [255, 0, 128] : [0, 37, 96],
     pickable: true,
     onHover: _.debounce((info) => {
       console.log('hover:', info)

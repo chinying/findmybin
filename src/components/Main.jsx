@@ -25,8 +25,6 @@ const initViewState = {
   height: 1000
 };
 
-const gData = require('../data/recyclingBins.json')
-
 function parseGeoJSON(geoData) {
   return geoData.features
 }
@@ -37,7 +35,6 @@ class Main extends React.Component {
     super(props)
     this.state = {
       viewport: initViewState,
-      recyclingBins: gData,
       nearestResults: []
     }
 
@@ -136,9 +133,10 @@ class Main extends React.Component {
           results go here
           {this.state.nearestResults.map((result) => (
             <div>
+              <p>TYPE: {result.waste_type}</p>
               <p>{result.geometry.coordinates}</p>
-              <p>{result.properties.HOUSENUMBER} {result.properties.ADDRESSSTREETNAME}, {result.properties.ADDRESSBUILDINGNAME} </p>
-              <p>Singapore {result.properties.ADDRESSPOSTALCODE}</p>
+              <p>{result.properties.blk} {result.properties.road}, {result.properties.building} </p>
+              <p>Singapore {result.properties.postal}</p>
               <p>{result.distance} km away</p>
               <hr/>
             </div>
