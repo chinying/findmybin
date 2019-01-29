@@ -4,7 +4,7 @@ import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
 import ReactMapGL, {StaticMap, FlyToInterpolator} from 'react-map-gl';
 
-import { sidebarStyle, flexStyle, searchBoxStyle } from '../styles'
+import { sidebarStyle, searchBoxStyle, bodyStyle } from '../styles'
 import { icon, iconData, layers } from '../mapComponents'
 import { search } from '../utils/geocode'
 
@@ -67,7 +67,7 @@ class Main extends React.Component {
       latitude,
       zoom: 15,
       transitionInterpolator: new FlyToInterpolator(),
-      transitionDuration: 3000
+      transitionDuration: 1000
     });
   };
 
@@ -98,9 +98,13 @@ class Main extends React.Component {
   render() {
     const {controller = true} = this.props
     let { viewport } = this.state
+    const { innerWidth: width, innerHeight: height } = window
+    // this._onViewPortChange({width, height})
+    viewport.height = height
+    viewport.width = width
 
     return (
-      <div style={flexStyle}>
+      <div style={bodyStyle}>
         <div style={sidebarStyle}>
           results go here
         </div>

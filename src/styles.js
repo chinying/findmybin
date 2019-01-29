@@ -1,9 +1,16 @@
 const sidebarStyle = {
+  position: 'absolute',
   width: '20%',
   height: '100vh',
   background: 'white',
   zIndex: 99999
 }
+
+const bodyStyle = {
+  margin: 0,
+  padding: 0
+}
+
 const flexStyle = {
   display: 'flex'
 }
@@ -13,4 +20,4 @@ const searchBoxStyle = {
   position: 'absolute'
 };
 
-export { sidebarStyle, flexStyle, searchBoxStyle }
+export { bodyStyle, sidebarStyle, flexStyle, searchBoxStyle }
