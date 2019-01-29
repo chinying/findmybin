@@ -7,6 +7,7 @@ import ReactMapGL, {StaticMap, FlyToInterpolator} from 'react-map-gl';
 import { sidebarStyle, searchBoxStyle, bodyStyle } from '../styles'
 import { icon, iconData, layers } from '../mapComponents'
 import { search } from '../utils/geocode'
+import { point as turfPoint, distance } from '@turf/turf'
 
 /* cannot be destructured as webpack plugin only
 * inserts into code where env vars are used
@@ -36,7 +37,8 @@ class Main extends React.Component {
     super(props)
     this.state = {
       viewport: initViewState,
-      recyclingBins: gData
+      recyclingBins: gData,
+      nearestResults: []
     }
 
     // this.fn = this.fn.bind(this)
@@ -44,7 +46,8 @@ class Main extends React.Component {
     this._onViewPortChange = this._onViewPortChange.bind(this)
     this._goToViewport = this._goToViewport.bind(this)
     this._onViewStateChange = this._onViewStateChange.bind(this);
-    this.debouncedSearch = _.debounce(this.debouncedSearch, 300)
+    this.computeDistance = this.computeDistance.bind(this)
+    this.debouncedSearch = _.debounce(this.debouncedSearch, 500)
   }
 
   inputChangeHandler(event) {
@@ -84,6 +87,7 @@ class Main extends React.Component {
       tempState.latitude = firstResult.geometry.coordinates[1]
 
       this._goToViewport(tempState)
+      this.computeDistance(tempState)
 
       console.log(tempState, this.state)
     })
@@ -94,6 +98,29 @@ class Main extends React.Component {
     this.setState({viewState});
   }
 
+  computeDistance(location) {
+    let pointsLayer = _.find(layers, {id: 'geojson'})
+    let points = pointsLayer.props.data
+    let referencePoint = turfPoint([location.longitude, location.latitude])
+    // debugger
+    let distances = points.map((p, idx) => {
+      let point = turfPoint(p.geometry.coordinates)
+      return {dist: distance(point, referencePoint), index: idx}
+    })
+    .sort((a, b) => {
+      return a.dist - b.dist
+    })
+
+    // debugger
+
+    let nearestResultIndices = _.take(distances, 20)
+    let nearestResults = nearestResultIndices.map(result => {
+      return {...points[result.index], distance: result.dist}
+    })
+
+    // debugger
+    this.setState({nearestResults})
+  }
 
   render() {
     const {controller = true} = this.props
@@ -107,6 +134,15 @@ class Main extends React.Component {
       <div style={bodyStyle}>
         <div style={sidebarStyle}>
           results go here
+          {this.state.nearestResults.map((result) => (
+            <div>
+              <p>{result.geometry.coordinates}</p>
+              <p>{result.properties.HOUSENUMBER} {result.properties.ADDRESSSTREETNAME}, {result.properties.ADDRESSBUILDINGNAME} </p>
+              <p>Singapore {result.properties.ADDRESSPOSTALCODE}</p>
+              <p>{result.distance} km away</p>
+              <hr/>
+            </div>
+          ))}
         </div>
         <div>
           <div className="search-box" style={searchBoxStyle}>

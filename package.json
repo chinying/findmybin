@@ -10,6 +10,7 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
+    "@turf/turf": "^5.1.6",
     "axios": "^0.18.0",
     "deck.gl": "^6.3.6",
     "dotenv": "^6.2.0",

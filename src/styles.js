@@ -2,6 +2,8 @@ const sidebarStyle = {
   position: 'absolute',
   width: '20%',
   height: '100vh',
+  maxHeight: '100vh',
+  overflow: 'scroll',
   background: 'white',
   zIndex: 99999
 }
