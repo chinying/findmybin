@@ -13,13 +13,27 @@ const bodyStyle = {
   padding: 0
 }
 
+const floatStyle = {
+  position: 'absolute'
+}
+
 const flexStyle = {
-  display: 'flex'
+  display: 'flex',
+  // flexDirection: 'column',
+  // justifyContent: 'flexEnd',
+  zIndex: 999999
 }
 
 const searchBoxStyle = {
+  ...floatStyle,
   zIndex: 99999,
-  position: 'absolute'
+  top: 0,
+  left: 'calc(50% - 50px)'
 };
 
-export { bodyStyle, sidebarStyle, flexStyle, searchBoxStyle }
+const materialBoxStyle = {
+  ...floatStyle,
+  zIndex: 99999,
+}
+
+export { bodyStyle, sidebarStyle, flexStyle, materialBoxStyle, searchBoxStyle }

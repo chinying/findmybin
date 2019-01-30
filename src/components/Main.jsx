@@ -4,7 +4,7 @@ import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
 import ReactMapGL, {StaticMap, FlyToInterpolator} from 'react-map-gl';
 
-import { sidebarStyle, searchBoxStyle, bodyStyle } from '../styles'
+import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
 import { icon, iconData, layers } from '../mapComponents'
 import { search } from '../utils/geocode'
 import { point as turfPoint, distance } from '@turf/turf'
@@ -145,6 +145,9 @@ class Main extends React.Component {
         <div>
           <div className="search-box" style={searchBoxStyle}>
             <input type="text" onChange={this.inputChangeHandler} />
+          </div>
+          <div>
+            <input type="text" id="material" style={materialBoxStyle} placeholder="i want to recycle" />
           </div>
             <ReactMapGL
               {...viewport}
