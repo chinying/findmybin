@@ -19,4 +19,4 @@ const layers = [
   })
 ];
 
-export { icon, iconData, layers }
+export { layers }

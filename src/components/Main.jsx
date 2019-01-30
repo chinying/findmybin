@@ -7,8 +7,11 @@ import { point as turfPoint, distance } from '@turf/turf'
 
 import LocationMarker from './LocationMarker'
 import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
-import { icon, iconData, layers } from '../mapComponents'
+import { layers } from '../mapComponents'
 import { search } from '../utils/geocode'
+import Burger from './Burger'
+
+import Autocomplete from 'react-autocomplete'
 
 /* cannot be destructured as webpack plugin only
 * inserts into code where env vars are used
@@ -41,7 +44,9 @@ class Main extends React.Component {
         longitude: 103.8198,
         latitude: 1.3521
       },
-      nearestResults: []
+      selectedSearchResult: '',
+      nearestResults: [],
+      hamburgerOpen: false
     }
 
     // this.fn = this.fn.bind(this)
@@ -146,9 +151,15 @@ class Main extends React.Component {
     this.setState({nearestResults})
   }
 
+  burgerMenuClick() {
+    this.setState({
+      hamburgerOpen: !this.state.hamburgerOpen
+    });
+  }
+
   render() {
     const {controller = true} = this.props
-    let { viewport } = this.state
+    let { selectedSearchResult, viewport } = this.state
     const { innerWidth: width, innerHeight: height } = window
     // this._onViewPortChange({width, height})
     viewport.height = height
@@ -172,6 +183,27 @@ class Main extends React.Component {
         <div>
           <div className="search-box" style={searchBoxStyle}>
             <input type="text" onChange={this.inputChangeHandler} />
+
+            <Autocomplete
+              getItemValue={(item) => item.label}
+              items={[
+                { label: 'apple' },
+                { label: 'banana' },
+                { label: 'pear' }
+              ]}
+              renderItem={(item, isHighlighted) =>
+                <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
+                  {item.label}
+                </div>
+              }
+              value={selectedSearchResult}
+              onChange={(e) =>
+                {
+                  this.setState({selectedSearchResult: e.target.value})
+                }
+              }
+              onSelect={(val) => value = val}
+            />
           </div>
           <div>
             <input type="text" id="material" style={materialBoxStyle} placeholder="i want to recycle" />
@@ -196,6 +228,7 @@ class Main extends React.Component {
               </DeckGL>
             </ReactMapGL>
         </div>
+
       </div>
     );
   }
