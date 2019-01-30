@@ -9,7 +9,6 @@ import LocationMarker from './LocationMarker'
 import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
 import { layers } from '../mapComponents'
 import { search } from '../utils/geocode'
-import Burger from './Burger'
 
 import Autocomplete from 'react-autocomplete'
 
@@ -29,6 +28,42 @@ const initViewState = {
   height: 1000
 };
 
+const defaultSearchList = [
+  {
+    "text": "Tanjong Pagar Railway Station",
+    "place_name": "Tanjong Pagar Railway Station, 30 Keppel Rd, Singapore, South West 08, Singapore",
+    "center": [
+      103.83846,
+      1.272851
+    ],
+    "geometry": {
+      "coordinates": [
+        103.83846,
+        1.272851
+      ],
+      "type": "Point"
+    },
+  },
+
+  {
+    "text": "Tanjong Rhu Park",
+    "place_name": "Tanjong Rhu Park, Tanjong Rhu View, Singapore, Central Singapore 43, Singapore",
+    "matching_text": "Tanjong Pagar Park",
+    "matching_place_name": "Tanjong Pagar Park, Tanjong Rhu View, Singapore, Central Singapore 43, Singapore",
+    "center": [
+      103.868416,
+      1.297972
+    ],
+    "geometry": {
+      "coordinates": [
+        103.868416,
+        1.297972
+      ],
+      "type": "Point"
+    },
+  }
+]
+
 const initialPinLocation = {
   coordinates: [0.0, 0.0, 0.0]
 };
@@ -44,7 +79,9 @@ class Main extends React.Component {
         longitude: 103.8198,
         latitude: 1.3521
       },
-      selectedSearchResult: '',
+      searchValue: '',
+      searchResults: [],
+      selectedSearchResult: {name: '', coordinates: [103.8198, 1.3521, 0]},
       nearestResults: [],
       hamburgerOpen: false
     }
@@ -103,24 +140,13 @@ class Main extends React.Component {
 
   debouncedSearch(term) {
     search(term)
-    .then(resp => {
-      console.log(resp.data)
-      // use _.get
-      let firstResult = resp.data.features[0]
-      let tempState = this.state.viewport
-
-      console.log('ASJKASLDJASKL', tempState, this.state)
-      tempState.longitude = firstResult.geometry.coordinates[0]
-      tempState.latitude = firstResult.geometry.coordinates[1]
-
-      this.updateLocationPin(tempState)
-      this.setState({hideLocationPin: false})
-      this._goToViewport(tempState)
-      this.computeDistance(tempState)
-
-      console.log(tempState, this.state)
-    })
-    .catch(err => { console.error('error searching', err) })
+      .then(resp => {
+        console.log(resp.data)
+        // use _.get
+        let results = resp.data.features
+        this.setState({searchResults: results})
+      })
+      .catch(err => { console.error('error searching', err) })
   }
 
   _onViewStateChange({viewState}) {
@@ -151,6 +177,19 @@ class Main extends React.Component {
     this.setState({nearestResults})
   }
 
+  _autocompleteSelectHandler(term) {
+    let selectedResult = _.find(this.state.searchResults, {text: term})
+    let tempState = this.state.viewport
+
+    tempState.longitude = selectedResult.geometry.coordinates[0]
+    tempState.latitude = selectedResult.geometry.coordinates[1]
+
+    this.updateLocationPin(tempState)
+    this.setState({hideLocationPin: false})
+    this._goToViewport(tempState)
+    this.computeDistance(tempState)
+  }
+
   burgerMenuClick() {
     this.setState({
       hamburgerOpen: !this.state.hamburgerOpen
@@ -159,7 +198,7 @@ class Main extends React.Component {
 
   render() {
     const {controller = true} = this.props
-    let { selectedSearchResult, viewport } = this.state
+    let { searchValue, selectedSearchResult, searchResults, viewport } = this.state
     const { innerWidth: width, innerHeight: height } = window
     // this._onViewPortChange({width, height})
     viewport.height = height
@@ -185,24 +224,21 @@ class Main extends React.Component {
             <input type="text" onChange={this.inputChangeHandler} />
 
             <Autocomplete
-              getItemValue={(item) => item.label}
-              items={[
-                { label: 'apple' },
-                { label: 'banana' },
-                { label: 'pear' }
-              ]}
+              getItemValue={(item) => item.text}
+              items={searchResults}
               renderItem={(item, isHighlighted) =>
                 <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-                  {item.label}
+                  {item.text}
                 </div>
               }
-              value={selectedSearchResult}
+              value={searchValue}
               onChange={(e) =>
                 {
-                  this.setState({selectedSearchResult: e.target.value})
+                  this.setState({searchValue: e.target.value})
+                  this.debouncedSearch(e.target.value)
                 }
               }
-              onSelect={(val) => value = val}
+              onSelect={this._autocompleteSelectHandler.bind(this)}
             />
           </div>
           <div>
