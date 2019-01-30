@@ -47,6 +47,10 @@ const config = {
           }
         ]
       },
+      { // css
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
       { // images
         test: /\.(pdf|jpg|png|gif|svg|ico)$/,
         use: [
