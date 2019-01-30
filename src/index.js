@@ -4,6 +4,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Main from "./components/Main.jsx"
 
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 const Index = () => {
   return (
     <Main />
