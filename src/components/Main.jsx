@@ -2,12 +2,13 @@ import axios from 'axios';
 import * as _ from 'lodash';
 import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
-import ReactMapGL, {StaticMap, FlyToInterpolator} from 'react-map-gl';
+import ReactMapGL, {Marker, StaticMap, FlyToInterpolator} from 'react-map-gl';
+import { point as turfPoint, distance } from '@turf/turf'
 
+import LocationMarker from './LocationMarker'
 import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
 import { icon, iconData, layers } from '../mapComponents'
 import { search } from '../utils/geocode'
-import { point as turfPoint, distance } from '@turf/turf'
 
 /* cannot be destructured as webpack plugin only
 * inserts into code where env vars are used
@@ -25,9 +26,9 @@ const initViewState = {
   height: 1000
 };
 
-function parseGeoJSON(geoData) {
-  return geoData.features
-}
+const initialPinLocation = {
+  coordinates: [0.0, 0.0, 0.0]
+};
 
 // DeckGL react component
 class Main extends React.Component {
@@ -35,6 +36,11 @@ class Main extends React.Component {
     super(props)
     this.state = {
       viewport: initViewState,
+      hideLocationPin: true,
+      locationPin: {
+        longitude: 103.8198,
+        latitude: 1.3521
+      },
       nearestResults: []
     }
 
@@ -44,13 +50,32 @@ class Main extends React.Component {
     this._goToViewport = this._goToViewport.bind(this)
     this._onViewStateChange = this._onViewStateChange.bind(this);
     this.computeDistance = this.computeDistance.bind(this)
+    this._renderLocationPin = this._renderLocationPin.bind(this)
+    this.updateLocationPin = this.updateLocationPin.bind(this)
     this.debouncedSearch = _.debounce(this.debouncedSearch, 500)
+  }
+
+  _renderLocationPin() {
+    if (!this.state.hideLocationPin) {
+      return (
+        <Marker
+          key={`marker`}
+          longitude={this.state.locationPin.longitude}
+          latitude={this.state.locationPin.latitude} >
+          <LocationMarker size={20} />
+        </Marker>
+      );
+    }
+  }
+
+  updateLocationPin(location) {
+    let { latitude, longitude } = location
+    this.setState({locationPin: {latitude, longitude}})
   }
 
   inputChangeHandler(event) {
     let searchTerm = event.target.value;
     this.setState({searchTerm})
-
     this.debouncedSearch(searchTerm)
   }
 
@@ -83,6 +108,8 @@ class Main extends React.Component {
       tempState.longitude = firstResult.geometry.coordinates[0]
       tempState.latitude = firstResult.geometry.coordinates[1]
 
+      this.updateLocationPin(tempState)
+      this.setState({hideLocationPin: false})
       this._goToViewport(tempState)
       this.computeDistance(tempState)
 
@@ -162,10 +189,10 @@ class Main extends React.Component {
                 initialViewState={initViewState}
                 controller={controller}
                 layers={layers}
-
                 viewState={viewport}
                 onViewStateChange={this._onViewStateChange}
               >
+                {this._renderLocationPin()}
               </DeckGL>
             </ReactMapGL>
         </div>
