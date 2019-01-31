@@ -19,11 +19,12 @@ const htmlPlugin = new HtmlWebPackPlugin({
 
 const config = {
   entry: { // source files
+    polyfill: 'babel-polyfill',
     'index': './src/index.js'
   },
   output: {
     path: path.resolve('dist'),
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
   module: { // here be loaders
     rules: [
