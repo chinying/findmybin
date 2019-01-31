@@ -57,7 +57,7 @@ class Main extends React.Component {
     this._onViewPortChange = this._onViewPortChange.bind(this)
     this._goToViewport = this._goToViewport.bind(this)
     this._onViewStateChange = this._onViewStateChange.bind(this);
-    this.computeDistance = this.computeDistance.bind(this)
+    this.computeDistance = _.debounce(this.computeDistance.bind(this), 500)
     this._renderLocationPin = this._renderLocationPin.bind(this)
     this.updateLocationPin = this.updateLocationPin.bind(this)
     this.debouncedSearch = _.debounce(this.debouncedSearch, 500)
@@ -121,6 +121,8 @@ class Main extends React.Component {
   filterTypeInputHandler(event) {
     let filterType = event.target.value
     this.setState({filterType})
+    if (this.state.locationPin.longitude !== 103.8198 &&
+      this.state.locationPin.latitude !== 1.3521) this.computeDistance(this.state.locationPin)
   }
 
   _onViewPortChange(viewport) {
