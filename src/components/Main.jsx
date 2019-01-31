@@ -154,6 +154,7 @@ class Main extends React.Component {
   }
 
   _onViewStateChange({viewState}) {
+    this.setState({showPopup: false})
     this.setState({viewState});
   }
 
@@ -206,8 +207,16 @@ class Main extends React.Component {
   }
 
   _renderPopup() {
-    // if (this.state.showPopup )
-
+    let {selectedSearchResult} = this.state
+    if (this.state.showPopup) {
+      return (
+        <Popup
+          latitude={selectedSearchResult.coordinates[1]} longitude={selectedSearchResult.coordinates[0]} closeButton={true} closeOnClick={true} anchor="top">
+          <div>{selectedSearchResult.name}</div>
+          <br/>
+        </Popup>
+      )
+    }
   }
 
   burgerMenuClick() {
@@ -265,7 +274,6 @@ class Main extends React.Component {
               // }}
               onViewportChange={this._onViewPortChange}
               mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-
             >
               <DeckGL
                 initialViewState={initViewState}
@@ -274,16 +282,7 @@ class Main extends React.Component {
                 viewState={viewport}
                 onViewStateChange={this._onViewStateChange}
               >
-                {
-                  this.state.showPopup ?
-                    (
-                      <Popup
-                        latitude={selectedSearchResult.coordinates[1]} longitude={selectedSearchResult.coordinates[0]} closeButton={true} closeOnClick={true} anchor="top">
-                        <div>{selectedSearchResult.name}</div>
-                        <br/>
-                      </Popup>
-                    ) : (<div></div>)
-                }
+                {this._renderPopup.bind(this)}
                 {this._renderLocationPin()}
               </DeckGL>
             </ReactMapGL>
