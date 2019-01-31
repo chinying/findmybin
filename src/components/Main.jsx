@@ -156,7 +156,7 @@ class Main extends React.Component {
   }
 
   computeDistance(location) {
-    let pointsLayer = _.find(layers(this.state.filterType), {id: 'geojson'})
+    let pointsLayer = _.find(this.layers(this.state.filterType), {id: 'geojson'})
     let points = pointsLayer.props.data
     let referencePoint = turfPoint([location.longitude, location.latitude])
     // debugger
