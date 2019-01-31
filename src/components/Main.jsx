@@ -1,13 +1,15 @@
+import axios from 'axios'
 import * as _ from 'lodash';
 import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
-import ReactMapGL, {Marker, StaticMap, FlyToInterpolator} from 'react-map-gl';
+import ReactMapGL, {FlyToInterpolator, Marker, Popup} from 'react-map-gl';
 import { point as turfPoint, distance } from '@turf/turf'
 
 import LocationMarker from './LocationMarker'
 import ResultItem from './ResultItem'
 import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
-import { layers } from '../mapComponents'
+// import { layers } from '../mapComponents'
+import { pointColours } from '../mapComponents'
 import { search } from '../utils/geocode'
 
 import Autocomplete from 'react-autocomplete'
@@ -33,6 +35,7 @@ class Main extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      gData: [],
       viewport: initViewState,
       hideLocationPin: true,
       locationPin: {
@@ -43,10 +46,12 @@ class Main extends React.Component {
       searchResults: [],
       selectedSearchResult: {name: '', coordinates: [103.8198, 1.3521, 0]},
       nearestResults: [],
+      filterType: '',
       hamburgerOpen: false
     }
 
     // this.fn = this.fn.bind(this)
+    this.layers = this.layers.bind(this)
     this.inputChangeHandler = this.inputChangeHandler.bind(this)
     this._onViewPortChange = this._onViewPortChange.bind(this)
     this._goToViewport = this._goToViewport.bind(this)
@@ -55,6 +60,36 @@ class Main extends React.Component {
     this._renderLocationPin = this._renderLocationPin.bind(this)
     this.updateLocationPin = this.updateLocationPin.bind(this)
     this.debouncedSearch = _.debounce(this.debouncedSearch, 500)
+  }
+
+  componentDidMount() {
+    axios.get('/assets/combined.json')
+      .then(resp => {
+        this.setState({gData: resp.data})
+      })
+      .catch(err => console.error(err))
+  }
+
+  // TODO: allow multiple
+  layers(wasteType = '') {
+    // FIXME: this will produce blank results if waste_type doesn't match
+    let gData = this.state.gData
+    let filteredPoints = (wasteType === '') ? gData : gData.filter(d => d.waste_type === wasteType)
+    return [
+      new ScatterplotLayer({
+        id: 'geojson',
+        data: filteredPoints,
+        radiusScale: 10,
+        radiusMinPixels: 1,
+        getPosition: d => d.geometry.coordinates,
+        getColor: d => pointColours(d.waste_type),
+        pickable: true,
+        onHover: _.debounce((info) => {
+          console.log('hover:', info)
+        }, 200),
+        onClick: info => console.log('Clicked:', info)
+      })
+    ]
   }
 
   _renderLocationPin() {
@@ -79,6 +114,11 @@ class Main extends React.Component {
     let searchTerm = event.target.value;
     this.setState({searchTerm})
     this.debouncedSearch(searchTerm)
+  }
+
+  filterTypeInputHandler(event) {
+    let filterType = event.target.value
+    this.setState({filterType})
   }
 
   _onViewPortChange(viewport) {
@@ -114,7 +154,7 @@ class Main extends React.Component {
   }
 
   computeDistance(location) {
-    let pointsLayer = _.find(layers, {id: 'geojson'})
+    let pointsLayer = _.find(layers(this.state.filterType), {id: 'geojson'})
     let points = pointsLayer.props.data
     let referencePoint = turfPoint([location.longitude, location.latitude])
     // debugger
@@ -125,14 +165,11 @@ class Main extends React.Component {
     .sort((a, b) => {
       return a.dist - b.dist
     })
-
     // debugger
-
     let nearestResultIndices = _.take(distances, 20)
     let nearestResults = nearestResultIndices.map(result => {
       return {...points[result.index], distance: result.dist}
     })
-
     // debugger
     this.setState({nearestResults})
   }
@@ -158,7 +195,7 @@ class Main extends React.Component {
 
   render() {
     const {controller = true} = this.props
-    let { searchValue, selectedSearchResult, searchResults, viewport } = this.state
+    let { filterType, searchValue, selectedSearchResult, searchResults, viewport } = this.state
     const { innerWidth: width, innerHeight: height } = window
     // this._onViewPortChange({width, height})
     viewport.height = height
@@ -193,7 +230,10 @@ class Main extends React.Component {
             />
           </div>
           <div>
-            <input type="text" id="material" style={materialBoxStyle} placeholder="i want to recycle" />
+            <input
+              type="text" id="material" style={materialBoxStyle} placeholder="i want to recycle"
+              onChange={this.filterTypeInputHandler.bind(this)}
+            />
           </div>
             <ReactMapGL
               {...viewport}
@@ -207,7 +247,7 @@ class Main extends React.Component {
               <DeckGL
                 initialViewState={initViewState}
                 controller={controller}
-                layers={layers}
+                layers={this.layers(filterType)}
                 viewState={viewport}
                 onViewStateChange={this._onViewStateChange}
               >
