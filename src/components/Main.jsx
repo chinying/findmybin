@@ -174,8 +174,6 @@ class Main extends React.Component {
         </div>
         <div>
           <div className="search-box" style={searchBoxStyle}>
-            <input type="text" onChange={this.inputChangeHandler} />
-
             <Autocomplete
               getItemValue={(item) => item.text}
               items={searchResults}
