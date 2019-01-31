@@ -1,4 +1,3 @@
-import axios from 'axios';
 import * as _ from 'lodash';
 import React from 'react';
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
@@ -6,6 +5,7 @@ import ReactMapGL, {Marker, StaticMap, FlyToInterpolator} from 'react-map-gl';
 import { point as turfPoint, distance } from '@turf/turf'
 
 import LocationMarker from './LocationMarker'
+import ResultItem from './ResultItem'
 import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
 import { layers } from '../mapComponents'
 import { search } from '../utils/geocode'
@@ -26,46 +26,6 @@ const initViewState = {
   bearing: 0,
   width: 1000,
   height: 1000
-};
-
-const defaultSearchList = [
-  {
-    "text": "Tanjong Pagar Railway Station",
-    "place_name": "Tanjong Pagar Railway Station, 30 Keppel Rd, Singapore, South West 08, Singapore",
-    "center": [
-      103.83846,
-      1.272851
-    ],
-    "geometry": {
-      "coordinates": [
-        103.83846,
-        1.272851
-      ],
-      "type": "Point"
-    },
-  },
-
-  {
-    "text": "Tanjong Rhu Park",
-    "place_name": "Tanjong Rhu Park, Tanjong Rhu View, Singapore, Central Singapore 43, Singapore",
-    "matching_text": "Tanjong Pagar Park",
-    "matching_place_name": "Tanjong Pagar Park, Tanjong Rhu View, Singapore, Central Singapore 43, Singapore",
-    "center": [
-      103.868416,
-      1.297972
-    ],
-    "geometry": {
-      "coordinates": [
-        103.868416,
-        1.297972
-      ],
-      "type": "Point"
-    },
-  }
-]
-
-const initialPinLocation = {
-  coordinates: [0.0, 0.0, 0.0]
 };
 
 // DeckGL react component
@@ -209,14 +169,7 @@ class Main extends React.Component {
         <div style={sidebarStyle}>
           results go here
           {this.state.nearestResults.map((result) => (
-            <div>
-              <p>TYPE: {result.waste_type}</p>
-              <p>{result.geometry.coordinates}</p>
-              <p>{result.properties.blk} {result.properties.road}, {result.properties.building} </p>
-              <p>Singapore {result.properties.postal}</p>
-              <p>{result.distance} km away</p>
-              <hr/>
-            </div>
+            <ResultItem result={result} />
           ))}
         </div>
         <div>
