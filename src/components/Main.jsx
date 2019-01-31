@@ -11,6 +11,7 @@ import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } 
 // import { layers } from '../mapComponents'
 import { pointColours } from '../mapComponents'
 import { search } from '../utils/geocode'
+import { matchTerm } from '../utils/textMatch'
 
 import Autocomplete from 'react-autocomplete'
 
@@ -74,7 +75,8 @@ class Main extends React.Component {
   layers(wasteType = '') {
     // FIXME: this will produce blank results if waste_type doesn't match
     let gData = this.state.gData
-    let filteredPoints = (wasteType === '') ? gData : gData.filter(d => d.waste_type === wasteType)
+    let matchedType = matchTerm(wasteType)
+    let filteredPoints = (matchedType === 'all' || matchedType === '') ? gData : gData.filter(d => d.waste_type === matchedType)
     return [
       new ScatterplotLayer({
         id: 'geojson',
