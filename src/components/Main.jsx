@@ -48,7 +48,8 @@ class Main extends React.Component {
       selectedSearchResult: {name: '', coordinates: [103.8198, 1.3521, 0]},
       nearestResults: [],
       filterType: '',
-      hamburgerOpen: false
+      hamburgerOpen: false,
+      showPopup: false,
     }
 
     // this.fn = this.fn.bind(this)
@@ -72,8 +73,7 @@ class Main extends React.Component {
   }
 
   // TODO: allow multiple
-  layers(wasteType = '') {
-    // FIXME: this will produce blank results if waste_type doesn't match
+  layers(wasteType = '', clickFunction) {
     let gData = this.state.gData
     let matchedType = matchTerm(wasteType)
     let filteredPoints = (matchedType === 'all' || matchedType === '') ? gData : gData.filter(d => d.waste_type === matchedType)
@@ -89,7 +89,7 @@ class Main extends React.Component {
         onHover: _.debounce((info) => {
           console.log('hover:', info)
         }, 200),
-        onClick: info => console.log('Clicked:', info)
+        onClick: info => clickFunction(info)
       })
     ]
   }
@@ -126,7 +126,6 @@ class Main extends React.Component {
   }
 
   _onViewPortChange(viewport) {
-    // console.log("_viewstate", viewport)
     this.setState({viewport: {...this.state.viewport, ...viewport}})
   }
 
@@ -192,6 +191,25 @@ class Main extends React.Component {
     this.computeDistance(tempState)
   }
 
+  clickFunction(point) {
+    console.log('clicked', point)
+    this.setState({showPopup: true})
+    let pt = point.object.properties
+    let name = `${pt.blk} ${pt.road}, ${pt.postal}`
+    let selectedSearchResult = {coordinates: point.object.geometry.coordinates, name}
+    this.setState({selectedSearchResult})
+  }
+
+  closePopupHandler() {
+    console.log('closed handler')
+    this.setState({showPopup: false})
+  }
+
+  _renderPopup() {
+    // if (this.state.showPopup )
+
+  }
+
   burgerMenuClick() {
     this.setState({
       hamburgerOpen: !this.state.hamburgerOpen
@@ -225,8 +243,7 @@ class Main extends React.Component {
                 </div>
               }
               value={searchValue}
-              onChange={(e) =>
-                {
+              onChange={(e) => {
                   this.setState({searchValue: e.target.value})
                   this.debouncedSearch(e.target.value)
                 }
@@ -248,14 +265,25 @@ class Main extends React.Component {
               // }}
               onViewportChange={this._onViewPortChange}
               mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
+
             >
               <DeckGL
                 initialViewState={initViewState}
                 controller={controller}
-                layers={this.layers(filterType)}
+                layers={this.layers(filterType, this.clickFunction.bind(this))}
                 viewState={viewport}
                 onViewStateChange={this._onViewStateChange}
               >
+                {
+                  this.state.showPopup ?
+                    (
+                      <Popup
+                        latitude={selectedSearchResult.coordinates[1]} longitude={selectedSearchResult.coordinates[0]} closeButton={true} closeOnClick={true} anchor="top">
+                        <div>{selectedSearchResult.name}</div>
+                        <br/>
+                      </Popup>
+                    ) : (<div></div>)
+                }
                 {this._renderLocationPin()}
               </DeckGL>
             </ReactMapGL>
