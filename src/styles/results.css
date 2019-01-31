@@ -1,0 +1,8 @@
+body {
+  font: 'Roboto'
+}
+
+.result-item {
+  border-radius: 5px;
+  background: white;
+}

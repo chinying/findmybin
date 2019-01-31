@@ -4,7 +4,6 @@ const sidebarStyle = {
   height: '100vh',
   maxHeight: '100vh',
   overflow: 'scroll',
-  background: 'white',
   zIndex: 99999
 }
 
@@ -27,7 +26,7 @@ const flexStyle = {
 const searchBoxStyle = {
   ...floatStyle,
   zIndex: 99999,
-  top: 0,
+  top: '5%',
   left: 'calc(50% - 50px)'
 };
 

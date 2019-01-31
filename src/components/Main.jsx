@@ -15,6 +15,9 @@ import { matchTerm } from '../utils/textMatch'
 
 import Autocomplete from 'react-autocomplete'
 
+import '@/styles/main.css'
+import '@/styles/input.css'
+
 /* cannot be destructured as webpack plugin only
 * inserts into code where env vars are used
 */
@@ -235,7 +238,7 @@ class Main extends React.Component {
 
     return (
       <div style={bodyStyle}>
-        <div style={sidebarStyle}>
+        <div style={sidebarStyle} className="results-list-container">
           results go here
           {this.state.nearestResults.map((result) => (
             <ResultItem result={result} />
@@ -244,6 +247,7 @@ class Main extends React.Component {
         <div>
           <div className="search-box" style={searchBoxStyle}>
             <Autocomplete
+              inputProps={{className: 'input-box'}}
               getItemValue={(item) => item.text}
               items={searchResults}
               renderItem={(item, isHighlighted) =>
@@ -262,7 +266,7 @@ class Main extends React.Component {
           </div>
           <div>
             <input
-              type="text" id="material" style={materialBoxStyle} placeholder="i want to recycle"
+              type="text" id="material" className="input-box" style={materialBoxStyle} placeholder="I want to recycle.."
               onChange={this.filterTypeInputHandler.bind(this)}
             />
           </div>

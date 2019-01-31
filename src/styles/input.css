@@ -1,0 +1,11 @@
+.input-box {
+  width: 200px;
+  padding: 3px;
+  font-size: 20px;
+  background: #fff;
+  border: solid 2px;
+  box-shadow: 0px 0px 0px 2px transparent;
+  color: #73C8A9;
+  -webkit-transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s;
+}
