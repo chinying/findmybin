@@ -8,6 +8,8 @@ f1 = open('./src/data/ewaste.json')
 j1 = json.loads(f1.read())
 f1.close()
 
-# f2 = open()
+f2 = open("./src/data/2ndhandgoods.json")
+j2 = json.loads(f2.read())
+f2.close()
 
-print(json.dumps(j0 + j1))
+print(json.dumps(j0 + j1 + j2))
