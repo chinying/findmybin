@@ -26,6 +26,11 @@ const config = {
     path: path.resolve('dist'),
     filename: '[name].bundle.js'
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   module: { // here be loaders
     rules: [
       { // look for js(x) files => babelify
