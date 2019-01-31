@@ -143,6 +143,7 @@ class Main extends React.Component {
   };
 
   debouncedSearch(term) {
+    if (term === '') return
     search(term)
       .then(resp => {
         console.log(resp.data)
