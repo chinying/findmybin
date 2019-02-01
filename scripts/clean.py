@@ -61,7 +61,7 @@ if __name__ == "__main__":
     for location in locations:
         parser.feed(location['properties']['description'])
         obj = {}
-        obj['waste_type'] = 'recycling'
+        obj['waste_type'] = 'Recyclable'
         obj['geometry'] = location['geometry']
         obj['properties'] = form_kv_from_tr(parser.trows)
         new_json_obj.append(obj)
