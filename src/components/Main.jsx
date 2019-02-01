@@ -14,7 +14,7 @@ import { search } from '../utils/geocode'
 import { matchTerm } from '../utils/textMatch'
 
 import Autocomplete from 'react-autocomplete'
-import Modal from 'react-modal'
+import ReactModal from 'react-modal'
 
 import '@/styles/main.css'
 import '@/styles/input.css'
@@ -55,6 +55,9 @@ class Main extends React.Component {
       filterType: '',
       hamburgerOpen: false,
       showPopup: false,
+      showModal: false,
+      recyclable: false,
+      predictionRecyclableAction: ""
     }
 
     // this.fn = this.fn.bind(this)
@@ -239,6 +242,46 @@ class Main extends React.Component {
     this.setState({hoveredSearchResult: r})
   }
 
+  handleOpenModal() {
+    this.setState({showModal: true})
+  }
+
+  handleCloseModal() {
+    this.setState({showModal: false})
+  }
+
+  fileFieldHandler(e) {
+    let files = e.target.files
+    let selectedFile = files[0]
+    // console.log(selectedFile)
+    this.setState({imageFile: selectedFile})
+  }
+
+  callImageRecognition() {
+    let formData = new FormData()
+    console.log(this.state ,this.state.imageFile)
+    formData.append('file', this.state.imageFile)
+    // debugger
+    console.log(formData)
+    // axios.post('http://localhost:5000/predict', {
+    //   data: formData,
+    //   config: { headers: {'Content-Type': 'multipart/form-data' }}
+    // })
+    axios({
+      method: 'post',
+      url: 'http://localhost:5000/predict',
+      data: formData,
+      config: { headers: {'Content-Type': 'multipart/form-data' }}
+    })
+    .then((resp) => {
+      let data = resp.data
+      let recyclable = data.waste_action
+      console.log(data)
+      console.log(recyclable)
+      this.setState({filterType: recyclable})
+    })
+  }
+
   burgerMenuClick() {
     this.setState({
       hamburgerOpen: !this.state.hamburgerOpen
@@ -283,11 +326,16 @@ class Main extends React.Component {
               }
               onSelect={this._autocompleteSelectHandler.bind(this)}
             />
+            <div className="openModalButton">
+              <button onClick={this.handleOpenModal.bind(this)}>Upload Image</button>
+            </div>
           </div>
+
           <div>
             <input
-              type="text" id="material" className="input-box" style={materialBoxStyle} placeholder="I want to recycle.."
+              type="text" id="material" className="input-box" style={materialBoxStyle} placeholder="Material type"
               onChange={this.filterTypeInputHandler.bind(this)}
+              value={this.state.filterType}
             />
           </div>
             <ReactMapGL
@@ -311,7 +359,18 @@ class Main extends React.Component {
               </DeckGL>
             </ReactMapGL>
         </div>
+        <ReactModal
+          isOpen={this.state.showModal}
+          contentLabel="Minimal Modal Example"
+          className="upload--modal"
+          // overlayClassName="modal--overlay"
+        >
+          <input type="file" onChange={this.fileFieldHandler.bind(this)} />
+          <button onClick={this.callImageRecognition.bind(this)}>Upload</button>
 
+          <br/>
+          <button onClick={this.handleCloseModal.bind(this)}>Close Modal</button>
+        </ReactModal>
       </div>
     );
   }

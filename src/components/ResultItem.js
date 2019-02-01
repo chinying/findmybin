@@ -27,7 +27,7 @@ export default class ResultItem extends Component {
           ? <h4>{result.properties.building}</h4>
           : <h4>{result.properties.road}</h4>
         }
-        <p>TYPE: {result.waste_type}</p>
+        <p>Type: {result.waste_type}</p>
         <p>
           {result.properties.blk} {result.properties.road}
           {result.properties.floor !== '<Null>' && result.properties.floor.trim().length > 0

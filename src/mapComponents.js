@@ -6,9 +6,9 @@ import { matchTerm } from './utils/textMatch'
 const gData = require('./data/combined.json')
 
 let pointColours = (wasteType) => {
-  if (wasteType === 'recycling') {
+  if (wasteType === 'Recyclable') {
     return [55, 168, 74]
-  } else if (wasteType === 'ewaste') {
+  } else if (wasteType === 'E-waste') {
     return [0, 37, 96]
   } else if (wasteType === '2ndhand') {
     return [255, 0, 128]
