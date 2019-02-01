@@ -19,6 +19,7 @@
     "react-autocomplete": "^1.8.1",
     "react-dom": "^16.7.0",
     "react-map-gl": "^4.0.8",
+    "react-modal": "^3.8.1",
     "react-select": "^2.3.0",
     "webpack": "^4.28.4"
   },
