@@ -14,6 +14,7 @@ import { search } from '../utils/geocode'
 import { matchTerm } from '../utils/textMatch'
 
 import Autocomplete from 'react-autocomplete'
+import Modal from 'react-modal'
 
 import '@/styles/main.css'
 import '@/styles/input.css'
@@ -49,6 +50,7 @@ class Main extends React.Component {
       searchValue: '',
       searchResults: [],
       selectedSearchResult: {name: '', coordinates: [103.8198, 1.3521, 0]},
+      hoveredSearchResult: {name: '', coordinates: [0, 0, 0]},
       nearestResults: [],
       filterType: '',
       hamburgerOpen: false,
@@ -58,6 +60,8 @@ class Main extends React.Component {
     // this.fn = this.fn.bind(this)
     this.layers = this.layers.bind(this)
     this.inputChangeHandler = this.inputChangeHandler.bind(this)
+    this.hoverEvent = _.debounce(this.hoverEvent, 1000)
+    // this.hoverEvent = this.hoverEvent.bind(this)
     this._onViewPortChange = this._onViewPortChange.bind(this)
     this._goToViewport = this._goToViewport.bind(this)
     this._onViewStateChange = this._onViewStateChange.bind(this);
@@ -90,9 +94,18 @@ class Main extends React.Component {
         getColor: d => pointColours(d.waste_type),
         pickable: true,
         onHover: _.debounce((info) => {
-          console.log('hover:', info)
+          // console.log('hover:', info)
         }, 200),
         onClick: info => clickFunction(info)
+      }),
+      new ScatterplotLayer({
+        id: 'highlighted',
+        data: [this.state.hoveredSearchResult],
+        radiusScale: 10,
+        radiusMinPixels: 4,
+        getPosition: d => d.coordinates,
+        getColor: d => [225,184,102],
+        pickable: false,
       })
     ]
   }
@@ -133,7 +146,6 @@ class Main extends React.Component {
   }
 
   _goToViewport(location) {
-    console.log('GOTO VIEWPORT', location)
     let {longitude, latitude} = location
     this._onViewPortChange({
       longitude,
@@ -222,6 +234,11 @@ class Main extends React.Component {
     }
   }
 
+  hoverEvent(r) {
+    console.log('hoverevent', r)
+    this.setState({hoveredSearchResult: r})
+  }
+
   burgerMenuClick() {
     this.setState({
       hamburgerOpen: !this.state.hamburgerOpen
@@ -238,10 +255,13 @@ class Main extends React.Component {
 
     return (
       <div style={bodyStyle}>
-        <div style={sidebarStyle} className="results-list-container">
+        <div style={sidebarStyle} className="results-list-container" >
           results go here
-          {this.state.nearestResults.map((result) => (
-            <ResultItem result={result} />
+          {this.state.nearestResults.map((result, key) => (
+            <ResultItem
+              index={`result--${key}`}
+              result={result}
+              clickEvent={this.hoverEvent} />
           ))}
         </div>
         <div>
