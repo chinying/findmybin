@@ -23,6 +23,7 @@ import '@/styles/input.css'
 * inserts into code where env vars are used
 */
 const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
+const PREDICTION_API_URL = process.env.PREDICTION_API_URL;
 
 // Viewport settings
 const initViewState = {
@@ -263,22 +264,21 @@ class Main extends React.Component {
     formData.append('file', this.state.imageFile)
     // debugger
     console.log(formData)
-    // axios.post('http://localhost:5000/predict', {
-    //   data: formData,
-    //   config: { headers: {'Content-Type': 'multipart/form-data' }}
-    // })
     axios({
       method: 'post',
-      url: 'http://localhost:5000/predict',
+      url: `${PREDICTION_API_URL}/predict`,
       data: formData,
       config: { headers: {'Content-Type': 'multipart/form-data' }}
     })
     .then((resp) => {
       let data = resp.data
-      let recyclable = data.waste_action
-      console.log(data)
-      console.log(recyclable)
-      this.setState({filterType: recyclable})
+      let recyclable = data.material
+      let matchedMaterial = matchTerm(recyclable)
+      this.setState({filterType: matchedMaterial})
+      // this.filterTypeInputHandler()
+    })
+    .finally(() => {
+      this.setState({showModal: false})
     })
   }
 
@@ -304,7 +304,8 @@ class Main extends React.Component {
             <ResultItem
               index={`result--${key}`}
               result={result}
-              clickEvent={this.hoverEvent} />
+              clickEvent={this.hoverEvent}
+              />
           ))}
         </div>
         <div>
@@ -335,6 +336,7 @@ class Main extends React.Component {
             <input
               type="text" id="material" className="input-box" style={materialBoxStyle} placeholder="Material type"
               onChange={this.filterTypeInputHandler.bind(this)}
+              onKeyUp={this.filterTypeInputHandler.bind(this)}
               value={this.state.filterType}
             />
           </div>
@@ -364,12 +366,14 @@ class Main extends React.Component {
           contentLabel="Minimal Modal Example"
           className="upload--modal"
           // overlayClassName="modal--overlay"
+          style={{display: "flex", flexDirection: "row"}}
         >
-          <input type="file" onChange={this.fileFieldHandler.bind(this)} />
-          <button onClick={this.callImageRecognition.bind(this)}>Upload</button>
-
+          <input className="modal-element" type="file" onChange={this.fileFieldHandler.bind(this)} />
+          <button className="modal-button modal-element" onClick={this.callImageRecognition.bind(this)}>Upload</button>
           <br/>
-          <button onClick={this.handleCloseModal.bind(this)}>Close Modal</button>
+          <div style={{marginBottom: "auto"}}>
+            <button onClick={this.handleCloseModal.bind(this)}>Close Modal</button>
+          </div>
         </ReactModal>
       </div>
     );

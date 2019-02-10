@@ -27,16 +27,19 @@ export default class ResultItem extends Component {
           ? <h4>{result.properties.building}</h4>
           : <h4>{result.properties.road}</h4>
         }
-        <p>Type: {result.waste_type}</p>
-        <p>
+        <span>Type: {result.waste_type}</span>
+        <br/>
+        <span>
           {result.properties.blk} {result.properties.road}
           {result.properties.floor !== '<Null>' && result.properties.floor.trim().length > 0
             ? <span>Level {result.properties.floor}</span>
             : <span></span>
           }
-        </p>
-        <p>Singapore {result.properties.postal}</p>
-        <p>{truncate(result.distance, 5)} km away</p>
+        </span>
+        <br/>
+        <span>Singapore {result.properties.postal}</span>
+        <br/>
+        <span>{truncate(result.distance, 5)} km away</span>
 
       </div>
     )

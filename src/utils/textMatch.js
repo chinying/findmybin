@@ -5,11 +5,12 @@ let results = {
   'glass': 0,
   'metal': 0,
   'others': 2,
-  'E-waste': 1,
-  'Recyclable': 0
+  'e-waste': 1,
+  'recyclable': 0
 }
 
 let matchTerm = (term) => {
+  term = term.toLowerCase()
   if (term in results) {
     return wasteTypes[results[term]]
   } else {
