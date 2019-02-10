@@ -1,8 +1,8 @@
 # Find my nearest recycling bin
 
-...and other features  
+...and other features (currently supports e-waste and 2nd hand collection points)  
 
-bad software engineering practices
+Disclaimer: This repo contains a lot of bad software engineering decisions and practices
 
 ---
 
@@ -10,6 +10,14 @@ I learn webpack.
 Also an excuse to play with deck.gl
 
 ---
+
+## datasets
+Get your datasets from data.gov.sg
+
+* https://data.gov.sg/dataset/recycling-bins
+* https://data.gov.sg/dataset/2nd-hand-goods-collection-points
+* https://data.gov.sg/dataset/e-waste-recycling
+
 
 ## todo
 
