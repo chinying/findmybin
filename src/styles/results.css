@@ -1,8 +1,9 @@
-body {
-  font: 'Roboto'
-}
 
 .result-item {
+  /* font-family: 'Helvetica' !important; */
   border-radius: 5px;
-  background: white;
+  background: #fff ;
+  color: black;
+  padding: 10px;
+  margin: 5px;
 }

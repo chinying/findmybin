@@ -3,9 +3,9 @@
   padding: 3px;
   font-size: 20px;
   background: #fff;
-  border: solid 2px;
+  border: solid 2px #73C8A9;
   box-shadow: 0px 0px 0px 2px transparent;
-  color: #73C8A9;
+  color: black;
   -webkit-transition: box-shadow 0.3s;
   transition: box-shadow 0.3s;
 }
