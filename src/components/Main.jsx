@@ -1,6 +1,8 @@
 import axios from 'axios'
 import * as _ from 'lodash';
 import React from 'react';
+import { connect } from 'react-redux';
+
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
 import ReactMapGL, {FlyToInterpolator, Marker, Popup} from 'react-map-gl';
 import { point as turfPoint, distance } from '@turf/turf'
@@ -25,6 +27,32 @@ import '@/styles/input.css'
 const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
 const PREDICTION_API_URL = process.env.PREDICTION_API_URL;
 
+import { UPDATE_VIEWPORT } from '@/constants/main'
+
+const mapStateToProps = state => {
+  // console.log("mapstatetoprops", state)
+  return {
+    viewport: state.mapMap.viewport
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  onViewPortChange: viewport => dispatch({
+    type: UPDATE_VIEWPORT,
+    payload: viewport
+  }),
+  onFollow: username => dispatch({
+    type: FOLLOW_USER,
+    payload: agent.Profile.follow(username)
+  }),
+  onLoad: payload => dispatch({ type: PROFILE_PAGE_LOADED, payload }),
+  onUnfollow: username => dispatch({
+    type: UNFOLLOW_USER,
+    payload: agent.Profile.unfollow(username)
+  }),
+  onUnload: () => dispatch({ type: PROFILE_PAGE_UNLOADED })
+});
+
 // Viewport settings
 const initViewState = {
   longitude: 103.8198,
@@ -38,28 +66,28 @@ const initViewState = {
 
 // DeckGL react component
 class Main extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      gData: [],
-      viewport: initViewState,
-      hideLocationPin: true,
-      locationPin: {
-        longitude: 103.8198,
-        latitude: 1.3521
-      },
-      searchValue: '',
-      searchResults: [],
-      selectedSearchResult: {name: '', coordinates: [103.8198, 1.3521, 0]},
-      hoveredSearchResult: {name: '', coordinates: [0, 0, 0]},
-      nearestResults: [],
-      filterType: '',
-      hamburgerOpen: false,
-      showPopup: false,
-      showModal: false,
-      recyclable: false,
-      predictionRecyclableAction: ""
-    }
+  constructor() {
+    super()
+    // this.state = {
+    //   gData: [],
+    //   viewport: initViewState,
+    //   hideLocationPin: true,
+    //   locationPin: {
+    //     longitude: 103.8198,
+    //     latitude: 1.3521
+    //   },
+    //   searchValue: '',
+    //   searchResults: [],
+    //   selectedSearchResult: {name: '', coordinates: [103.8198, 1.3521, 0]},
+    //   hoveredSearchResult: {name: '', coordinates: [0, 0, 0]},
+    //   nearestResults: [],
+    //   filterType: '',
+    //   hamburgerOpen: false,
+    //   showPopup: false,
+    //   showModal: false,
+    //   recyclable: false,
+    //   predictionRecyclableAction: ""
+    // }
 
     // this.fn = this.fn.bind(this)
     this.layers = this.layers.bind(this)
@@ -76,11 +104,13 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('/assets/combined.json')
-      .then(resp => {
-        this.setState({gData: resp.data})
-      })
-      .catch(err => console.error(err))
+    debugger
+    console.log(this.state)
+    // axios.get('/assets/combined.json')
+    //   .then(resp => {
+    //     this.setState({gData: resp.data})
+    //   })
+    //   .catch(err => console.error(err))
   }
 
   // TODO: allow multiple
@@ -289,6 +319,8 @@ class Main extends React.Component {
   }
 
   render() {
+    console.log("props", this.props)
+
     const {controller = true} = this.props
     let { filterType, searchValue, selectedSearchResult, searchResults, viewport } = this.state
     const { innerWidth: width, innerHeight: height } = window
@@ -310,6 +342,7 @@ class Main extends React.Component {
         </div>
         <div>
           <div className="search-box" style={searchBoxStyle}>
+            <p>viewport: { this.props.viewport }</p>
             <Autocomplete
               inputProps={{className: 'input-box'}}
               getItemValue={(item) => item.text}
@@ -380,4 +413,7 @@ class Main extends React.Component {
   }
 }
 
-export default Main;
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export { Main, mapStateToProps };
+
+// export default Main;
