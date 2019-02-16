@@ -5,6 +5,7 @@ import {
   UPDATE_VIEWPORT_SIZE,
 } from "@/constants/main"
 
+import { pointColours } from '@/mapComponents'
 import { ScatterplotLayer } from 'deck.gl'
 
 let defaultState = {
@@ -25,10 +26,9 @@ let defaultState = {
 export default (state = defaultState, action) => {
   switch (action.type) {
     case UPDATE_VIEWPORT:
-      // console.log(action)
       return {
         ...state,
-        viewport: action.payload.viewState
+        viewport: action.payload
       };
     case UPDATE_VIEWPORT_SIZE:
       let viewport = {
@@ -42,6 +42,7 @@ export default (state = defaultState, action) => {
         viewport
       };
     case UPDATE_LAYERS:
+      console.log('points', state.disposablePoints)
       return {
         ...state,
         layers: new ScatterplotLayer({
@@ -57,7 +58,7 @@ export default (state = defaultState, action) => {
     case UPDATE_DISPOSABLE_POINTS:
       return {
         ...state,
-        disposablePoints: action.payload.points
+        disposablePoints: action.payload
       };
     // case ARTICLE_PAGE_LOADED:
     //   return {

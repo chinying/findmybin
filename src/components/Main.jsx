@@ -4,18 +4,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
-import ReactMapGL, {FlyToInterpolator, Marker, Popup} from 'react-map-gl';
+import ReactMapGL, {Marker, Popup} from 'react-map-gl';
 import { point as turfPoint, distance } from '@turf/turf'
 
 import LocationMarker from './LocationMarker'
 import ResultItem from './ResultItem'
+import Results from './Results'
 import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
-// import { layers } from '../mapComponents'
-import { pointColours } from '../mapComponents'
-import { search } from '../utils/geocode'
-import { matchTerm } from '../utils/textMatch'
-
-import Autocomplete from 'react-autocomplete'
+import SearchBox from '@/components/SearchBox'
 import ReactModal from 'react-modal'
 
 import '@/styles/main.css'
@@ -33,23 +29,20 @@ import {
 } from '@/constants/main'
 import { UPDATE_DISPOSABLE_POINTS, UPDATE_LAYERS } from '../constants/main';
 
-/**
- * suspicion that map data update doesn't work because its async
- */
-
 const mapStateToProps = state => {
   // console.log("mapstatetoprops", state)
   return {
     viewport: state.mainMap.viewport,
     points: state.mainMap.disposablePoints,
-    layers: state.mainMap.layers
+    layers: state.mainMap.layers,
+    pin: state.geolocation.pin
   }
 }
 
 const mapDispatchToProps = dispatch => ({
   updateViewport: viewport => dispatch({
     type: UPDATE_VIEWPORT,
-    payload: viewport
+    payload: viewport.viewState
   }),
   updateViewPortSize: ({ height, width }) => dispatch({
     type: UPDATE_VIEWPORT_SIZE,
@@ -62,7 +55,6 @@ const mapDispatchToProps = dispatch => ({
   updateMapLayers: () => dispatch({
     type: UPDATE_LAYERS,
   })
-
 });
 
 // Viewport settings
@@ -82,12 +74,25 @@ class Main extends React.Component {
     super(props)
   }
 
+  renderLocationPin() {
+    if (this.props.pin.visible) {
+      return (
+        <Marker
+          key={`marker`}
+          longitude={this.props.pin.longitude}
+          latitude={this.props.pin.latitude} >
+          <LocationMarker size={20} />
+        </Marker>
+      );
+    }
+  }
+
   componentDidMount() {
     axios.get('/assets/combined.json')
       .then(resp => {
         // this.setState({gData: resp.data})
         this.props.updateDisposablePoints(resp.data)
-
+        this.props.updateMapLayers()
       })
       .catch(err => console.error(err))
   }
@@ -101,21 +106,34 @@ class Main extends React.Component {
 
     return (
       <div>
-        { this.props.viewport.latitude }
-        <ReactMapGL
-          { ...this.props.viewport }
-          mapboxApiAccessToken = { MAPBOX_ACCESS_TOKEN }
-          onViewStateChange = { this.props.updateViewport }
-          >
-          <DeckGL
-            initialViewState = {initViewState}
-            controller={true}
-            layers = {this.props.layers}
-            viewState = {this.props.viewport}
-            onViewPortChange = { this.props.updateViewport }
-          >
-          </DeckGL>
-        </ReactMapGL>
+        <div className="sidebar-container">
+          <div className="results-list-container">
+            sidebar here
+            <Results />
+          </div>
+        </div>
+        <div className="map-div-container">
+          <div className="topbar">
+            <SearchBox />
+          </div>
+          <div className="map-body">
+            <ReactMapGL
+              { ...this.props.viewport }
+              mapboxApiAccessToken = { MAPBOX_ACCESS_TOKEN }
+              onViewStateChange = { this.props.updateViewport }
+              >
+              <DeckGL
+                initialViewState = {initViewState}
+                controller={true}
+                layers = {this.props.layers}
+                viewState = {this.props.viewport}
+                onViewPortChange = { this.props.updateViewport }
+              >
+                { this.renderLocationPin.bind(this) }
+              </DeckGL>
+            </ReactMapGL>
+          </div>
+        </div>
 
       </div>
     )

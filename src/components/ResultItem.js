@@ -15,14 +15,12 @@ export default class ResultItem extends Component {
     super(props)
   }
 
-  // clickEvent(e) {
-  //   console.log(e)
-  // }
-
   render() {
-    let {result} = this.props
+    let { result } = this.props
     return (
-      <div className="result-item" onClick={this.props.clickEvent(result)}>
+      <div className="result-item"
+      //  onClick={this.props.clickEvent(result)}
+      >
         {result.properties.building !== '<Null>'
           ? <h4>{result.properties.building}</h4>
           : <h4>{result.properties.road}</h4>
