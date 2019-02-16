@@ -5,7 +5,7 @@ import reducer from "@/reducers/index"
 
 const store = createStore(
   reducer,
-  applyMiddleware(logger)
+  // applyMiddleware(logger)
 )
 
 export { store }

@@ -25,7 +25,8 @@ const PREDICTION_API_URL = process.env.PREDICTION_API_URL;
 
 import {
   UPDATE_VIEWPORT,
-  UPDATE_VIEWPORT_SIZE
+  UPDATE_VIEWPORT_SIZE,
+  UPDATE_GEOJSON_SCATTER
 } from '@/constants/main'
 import { UPDATE_DISPOSABLE_POINTS, UPDATE_LAYERS } from '../constants/main';
 
@@ -53,7 +54,7 @@ const mapDispatchToProps = dispatch => ({
     payload: points
   }),
   updateMapLayers: () => dispatch({
-    type: UPDATE_LAYERS,
+    type: UPDATE_GEOJSON_SCATTER,
   })
 });
 
@@ -108,7 +109,7 @@ class Main extends React.Component {
       <div>
         <div className="sidebar-container">
           <div className="results-list-container">
-            sidebar here
+            Nearest disposable drop-off locations:
             <Results />
           </div>
         </div>

@@ -35,7 +35,7 @@ const mapStateToProps = state => {
     searchTerm: state.geolocation.term,
     searchResults: state.geolocation.results,
     viewport: state.mainMap.viewport,
-    pointsLayer: _.find(state.mainMap.layers, {id: 'geojson'})
+    pointsLayer: _.find(state.mainMap.layers, {id: 'geojson'}),
   }
 }
 
@@ -98,7 +98,7 @@ class SearchBox extends React.Component {
   }
 
   computeDistance(location) {
-    let propspointsLayer = this.props.pointsLayer
+    let propspointsLayer = this.props.pointsLayer.props
     let points = propspointsLayer.data
 
     let latitude = location.geometry.coordinates[1]

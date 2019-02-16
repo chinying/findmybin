@@ -1,9 +1,13 @@
 import {
+  ADD_HIGHLIGHT_LAYER,
   UPDATE_DISPOSABLE_POINTS,
   UPDATE_LAYERS,
+  UPDATE_GEOJSON_SCATTER,
   UPDATE_VIEWPORT,
   UPDATE_VIEWPORT_SIZE,
 } from "@/constants/main"
+
+import * as _ from 'lodash'
 
 import { pointColours } from '@/mapComponents'
 import { ScatterplotLayer } from 'deck.gl'
@@ -19,7 +23,13 @@ let defaultState = {
     height: 1000
   },
   disposablePoints: [],
-  layers: [],
+  layers: [
+    new ScatterplotLayer({
+      id: 'highlighted-point',
+      data: [],
+      getPosition: d => d.geometry.coordinates
+    })
+  ],
   loading: false
 }
 
@@ -36,52 +46,57 @@ export default (state = defaultState, action) => {
         height: action.payload.height,
         width: action.payload.width
       }
-      // console.log(action)
       return {
         ...state,
         viewport
       };
-    case UPDATE_LAYERS:
+    case UPDATE_GEOJSON_SCATTER:
       console.log('points', state.disposablePoints)
       return {
         ...state,
-        layers: new ScatterplotLayer({
-          id: 'geojson',
-          data: state.disposablePoints,
-          radiusScale: 10,
-          radiusMinPixels: 1,
-          getPosition: d => d.geometry.coordinates,
-          getColor: d => pointColours(d.waste_type),
-          pickable: true,
-        })
+        layers: [
+          new ScatterplotLayer({
+            id: 'geojson',
+            data: state.disposablePoints,
+            radiusScale: 10,
+            radiusMinPixels: 1,
+            getPosition: d => d.geometry.coordinates,
+            getColor: d => pointColours(d.waste_type),
+            pickable: true,
+          }),
+          new ScatterplotLayer({
+            id: 'highlighted-point',
+            data: [],
+            getPosition: d => d.geometry.coordinates
+          })
+        ]
       };
     case UPDATE_DISPOSABLE_POINTS:
       return {
         ...state,
         disposablePoints: action.payload
       };
-    // case ARTICLE_PAGE_LOADED:
-    //   return {
-    //     ...state,
-    //     article: action.payload[0].article,
-    //     comments: action.payload[1].comments
-    //   };
-    // case ARTICLE_PAGE_UNLOADED:
-    //   return {};
-    // case ADD_COMMENT:
-    //   return {
-    //     ...state,
-    //     commentErrors: action.error ? action.payload.errors : null,
-    //     comments: action.error ?
-    //       null :
-    //       (state.comments || []).concat([action.payload.comment])
-    //   };
-    // case DELETE_COMMENT:
-    //   const commentId = action.commentId
-    //   return {
-    //     ...state,
-    //     comments: state.comments.filter(comment => comment.id !== commentId)
-    //   };
+    case ADD_HIGHLIGHT_LAYER:
+      let layers = state.layers
+      let layerName = 'highlighted-point'
+      let highlightedLayer = _.find(layers, {id: layerName})
+      let highlightedLayerIndex = _.findIndex(layers, {id: layerName})
+
+      let newHighlightedLayer = new ScatterplotLayer({
+        ...highlightedLayer.props,
+        id: layerName,
+        data: action.payload,
+        radiusScale: 15,
+        getPosition: d => d.geometry.coordinates,
+        getColor: [189, 85, 50],
+        pickable: false
+      })
+      layers.splice(highlightedLayerIndex, 1) // note that this statement *returns* the spliced item
+      return {
+        ...state,
+        layers: [...layers, newHighlightedLayer]
+        // layers
+      };
     default:
       return state;
   }

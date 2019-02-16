@@ -27,36 +27,39 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  // updateViewport: viewport => dispatch({
-  //   type: UPDATE_VIEWPORT,
-  //   payload: viewport.viewState
-  // }),
-  // updateViewPortSize: ({ height, width }) => dispatch({
-  //   type: UPDATE_VIEWPORT_SIZE,
-  //   payload: {height, width}
-  // }),
-  // updateDisposablePoints: points => dispatch({
-  //   type: UPDATE_DISPOSABLE_POINTS,
-  //   payload: points
-  // }),
-  // updateMapLayers: () => dispatch({
-  //   type: UPDATE_LAYERS,
-  // })
+  clickHandler: (e) => {
+    console.log('clickhandler asdkjsad', e)
+  }
 });
 
+
 class Results extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
+    // this.clickHandler = this.clickHandler.bind(this)
+    this.hoverEvent = this.hoverEvent.bind(this)
   }
+
+  clickEvent () {
+    console.log('called')
+    return function(e) {
+      console.log(e)
+    }
+  }
+
+  hoverEvent (r) {
+    console.log('asddsasdsa', r)
+  }
+
   render() {
-    // this.props.updateMapLayers()
     return (
       <div>
         {this.props.results.map((result, key) => (
           <ResultItem
             index={`result--${key}`}
             result={result}
-            // clickEvent={this.hoverEvent}
+            // clickEvent={() => this.hoverEvent(cb)}
+            // onClick = { this.props.clickHandler }
             />
         ))}
       </div>
@@ -66,5 +69,3 @@ class Results extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Results);
 export { Results, mapStateToProps };
-
-// export default Main;

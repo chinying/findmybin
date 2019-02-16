@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
 import '@/styles/results.css'
+import { connect } from 'react-redux';
+
+
+import {
+  ADD_HIGHLIGHT_LAYER
+} from '@/constants/main'
 
 function truncate(str, len) {
   let text = (typeof str !== 'string') ? str.toString() : str
@@ -9,17 +15,39 @@ function truncate(str, len) {
   return text
 }
 
-export default class ResultItem extends Component {
+const mapStateToProps = state => {
+  return {
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  clickEvent: (result) => {
+    // console.log(result.geometry.coordinates)
+    dispatch({
+      type: ADD_HIGHLIGHT_LAYER,
+      payload: [result]
+    })
+  }
+});
+
+
+class ResultItem extends Component {
 
   constructor(props) {
     super(props)
+    this.clickEvent = this.clickEvent.bind(this)
+  }
+
+  clickEvent(r) {
+    console.log('clicked r', r)
   }
 
   render() {
     let { result } = this.props
     return (
       <div className="result-item"
-      //  onClick={this.props.clickEvent(result)}
+       onClick={() => this.props.clickEvent(result)}
+      // onClick = {this.props.clickEvent(result.properties.postal) }
       >
         {result.properties.building !== '<Null>'
           ? <h4>{result.properties.building}</h4>
@@ -43,3 +71,8 @@ export default class ResultItem extends Component {
     )
   }
 }
+
+// export default ResultItem
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResultItem);
+export { ResultItem, mapStateToProps };
