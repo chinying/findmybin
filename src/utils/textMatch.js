@@ -1,3 +1,7 @@
+/**
+ * Very crappy matching system that I'm hoping to replace with a lightweight enough classifier
+ */
+
 let wasteTypes = ['Recyclable', 'E-waste', 'Unknown']
 let results = {
   'plastic': 0,
@@ -9,7 +13,7 @@ let results = {
   'recyclable': 0
 }
 
-let matchTerm = (term) => {
+let matchTerm = (term = '') => {
   term = term.toLowerCase()
   if (term in results) {
     return wasteTypes[results[term]]

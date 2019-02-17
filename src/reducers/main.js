@@ -2,7 +2,7 @@ import {
   ADD_HIGHLIGHT_LAYER,
   SET_INITIAL_SCATTER_POINTS,
   UPDATE_DISPOSABLE_POINTS,
-  UPDATE_LAYERS,
+  UPDATE_FILTER_TERM,
   UPDATE_GEOJSON_SCATTER,
   UPDATE_VIEWPORT,
   UPDATE_VIEWPORT_SIZE,
@@ -11,6 +11,7 @@ import {
 import * as _ from 'lodash'
 
 import { pointColours } from '@/mapComponents'
+import { filterPoints } from '@/utils/computeDistances'
 import { layerReplacementFactory } from '@/utils/geocode'
 import { ScatterplotLayer } from 'deck.gl'
 
@@ -41,6 +42,7 @@ let defaultState = {
       getPosition: d => d.geometry.coordinates
     })
   ],
+  filterTerm: "",
   loading: false
 }
 
@@ -68,10 +70,10 @@ export default (state = defaultState, action) => {
       }
     case UPDATE_GEOJSON_SCATTER:
       console.log('points', state.disposablePoints)
-
+      let filteredPoints = filterPoints(state.disposablePoints, state.filterTerm)
       let binsLayer = new ScatterplotLayer({
         id: geoJsonLayerName,
-        data: state.disposablePoints,
+        data: filteredPoints,
         radiusScale: 10,
         radiusMinPixels: 1,
         getPosition: d => d.geometry.coordinates,
@@ -100,6 +102,11 @@ export default (state = defaultState, action) => {
         ...state,
         layers: layerReplacementFactory(state.layers, highlightLayerName, newHighlightedLayer)
       };
+    case UPDATE_FILTER_TERM:
+      return {
+        ...state,
+        filterTerm: action.payload
+      }
     default:
       return state;
   }

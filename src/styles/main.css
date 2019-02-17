@@ -21,6 +21,11 @@
   color: #aaa;
 }
 
+.topbar-contents {
+  display: flex;
+  justify-content: space-between;
+}
+
 .results-list-container {
   background: #eee;
   opacity: .8;

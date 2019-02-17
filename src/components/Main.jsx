@@ -3,14 +3,11 @@ import * as _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import DeckGL, {ScatterplotLayer, IconLayer} from 'deck.gl';
+import DeckGL from 'deck.gl';
 import ReactMapGL, {Marker, Popup} from 'react-map-gl';
-import { point as turfPoint, distance } from '@turf/turf'
 
 import LocationMarker from './LocationMarker'
-import ResultItem from './ResultItem'
 import Results from './Results'
-import { sidebarStyle, searchBoxStyle, bodyStyle, flexStyle, materialBoxStyle } from '../styles'
 import SearchBox from '@/components/SearchBox'
 import ReactModal from 'react-modal'
 
@@ -36,7 +33,8 @@ const mapStateToProps = state => {
     viewport: state.mainMap.viewport,
     points: state.mainMap.disposablePoints,
     layers: state.mainMap.layers,
-    pin: state.geolocation.pin
+    pin: state.geolocation.pin,
+    filterTypes: state.geolocation.filterTerm
   }
 }
 

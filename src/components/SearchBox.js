@@ -20,14 +20,14 @@ const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
 const PREDICTION_API_URL = process.env.PREDICTION_API_URL;
 
 import {
+  UPDATE_FILTER_TERM,
   UPDATE_VIEWPORT,
-  UPDATE_VIEWPORT_SIZE,
-  UPDATE_DISPOSABLE_POINTS,
   SET_LOCATION_PIN,
   SET_NEAREST_RESULTS,
   SET_PIN_VISIBILITY,
-  SET_SEARCH_TERM,
   SET_SEARCH_RESULTS,
+  SET_SEARCH_TERM,
+  UPDATE_GEOJSON_SCATTER,
 } from '@/constants/main'
 
 const mapStateToProps = state => {
@@ -60,7 +60,6 @@ const mapDispatchToProps = (dispatch) => ({
   selectHandler: (selectedResult) => {
     let latitude = selectedResult.geometry.coordinates[1]
     let longitude = selectedResult.geometry.coordinates[0]
-    // let nearestResults = computeDistance
     dispatch({
       type: SET_LOCATION_PIN,
       payload: {
@@ -76,12 +75,19 @@ const mapDispatchToProps = (dispatch) => ({
       type: UPDATE_VIEWPORT,
       payload: flyInterpolatorFactory({latitude, longitude})
     })
-    // dispatch({
-    // })
   },
   updateClosestPoints: (points) => dispatch({
     type: SET_NEAREST_RESULTS,
     payload: points
+  }),
+
+  updateFilterTerm: term => dispatch({
+    type: UPDATE_FILTER_TERM,
+    payload: term
+  }),
+
+  updateGeoJsonScatter: () => dispatch({
+    type: UPDATE_GEOJSON_SCATTER
   })
 });
 
@@ -89,6 +95,7 @@ const mapDispatchToProps = (dispatch) => ({
 class SearchBox extends React.Component {
   constructor(props) {
     super(props)
+    this.updateFilterTerm = _.debounce(this.updateFilterTerm.bind(this), 300)
   }
 
   selectHandler(term) {
@@ -110,9 +117,17 @@ class SearchBox extends React.Component {
     this.props.updateClosestPoints(closest)
   }
 
+  updateFilterTerm (term) {
+    console.log('this should be debounced')
+    this.props.updateFilterTerm(term)
+    this.props.updateGeoJsonScatter()
+  }
+
   render() {
     return (
-      <div>
+      <div className="topbar-contents">
+        <span>
+        Search:
         <Autocomplete
           inputProps={{className: 'input-box'}}
           getItemValue={(item) => item.text}
@@ -132,6 +147,14 @@ class SearchBox extends React.Component {
             this.selectHandler.bind(this)
           }
         />
+        </span>
+        <div>
+          Filter by:
+          <input type="text" className='input-box'
+            value = { this.props.filterTerm }
+            onChange = {e => this.updateFilterTerm(e.target.value)}
+          />
+        </div>
       </div>
     )
   }

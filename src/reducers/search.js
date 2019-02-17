@@ -3,7 +3,6 @@ import {
   SET_SEARCH_TERM,
   SET_SEARCH_RESULTS,
   SET_PIN_VISIBILITY,
-  UPDATE_VIEWPORT,
 } from "@/constants/main"
 
 let defaultState = {
@@ -13,7 +12,7 @@ let defaultState = {
     visible: false,
     latitude: 1.3521,
     longitude: 103.8198
-  }
+  },
 }
 
 export default (state = defaultState, action) => {
