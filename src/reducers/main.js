@@ -1,6 +1,7 @@
 import {
   ADD_HIGHLIGHT_LAYER,
   SET_INITIAL_SCATTER_POINTS,
+  SET_MODAL_VISIBILITY,
   UPDATE_DISPOSABLE_POINTS,
   UPDATE_FILTER_TERM,
   UPDATE_GEOJSON_SCATTER,
@@ -43,6 +44,7 @@ let defaultState = {
     })
   ],
   filterTerm: "",
+  showModal: false,
   loading: false
 }
 
@@ -106,6 +108,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         filterTerm: action.payload
+      }
+    case SET_MODAL_VISIBILITY:
+      return {
+        ...state,
+        showModal: action.payload
       }
     default:
       return state;

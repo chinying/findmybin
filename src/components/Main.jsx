@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import DeckGL from 'deck.gl';
 import ReactMapGL, {Marker, Popup} from 'react-map-gl';
 
+import { matchTerm } from '@/utils/textMatch'
+
 import LocationMarker from './LocationMarker'
 import Results from './Results'
 import SearchBox from '@/components/SearchBox'
@@ -21,11 +23,13 @@ const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
 const PREDICTION_API_URL = process.env.PREDICTION_API_URL;
 
 import {
+  SET_MODAL_VISIBILITY,
+  UPDATE_DISPOSABLE_POINTS,
+  UPDATE_FILTER_TERM,
   UPDATE_VIEWPORT,
   UPDATE_VIEWPORT_SIZE,
   UPDATE_GEOJSON_SCATTER
 } from '@/constants/main'
-import { UPDATE_DISPOSABLE_POINTS, UPDATE_LAYERS } from '../constants/main';
 
 const mapStateToProps = state => {
   // console.log("mapstatetoprops", state)
@@ -34,7 +38,8 @@ const mapStateToProps = state => {
     points: state.mainMap.disposablePoints,
     layers: state.mainMap.layers,
     pin: state.geolocation.pin,
-    filterTypes: state.geolocation.filterTerm
+    filterTypes: state.geolocation.filterTerm,
+    showModal: state.mainMap.showModal,
   }
 }
 
@@ -53,7 +58,15 @@ const mapDispatchToProps = dispatch => ({
   }),
   updateMapLayers: () => dispatch({
     type: UPDATE_GEOJSON_SCATTER,
-  })
+  }),
+  setModalVisibility: (bool) => dispatch({
+    type: SET_MODAL_VISIBILITY,
+    payload: bool
+  }),
+  updateFilterTerm: term => dispatch({
+    type: UPDATE_FILTER_TERM,
+    payload: term
+  }),
 });
 
 // Viewport settings
@@ -71,6 +84,9 @@ const initViewState = {
 class Main extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      imageFile: null
+    }
   }
 
   renderLocationPin() {
@@ -84,6 +100,37 @@ class Main extends React.Component {
         </Marker>
       );
     }
+  }
+
+
+  fileFieldHandler(e) {
+    let files = e.target.files
+    let selectedFile = files[0]
+    this.setState({imageFile: selectedFile})
+  }
+
+  callImageRecognition() {
+    let formData = new FormData()
+    console.log(this.state ,this.state.imageFile)
+    formData.append('file', this.state.imageFile)
+    // debugger
+    axios({
+      method: 'post',
+      url: `${PREDICTION_API_URL}/predict`,
+      data: formData,
+      config: { headers: {'Content-Type': 'multipart/form-data' }}
+    })
+    .then((resp) => {
+      let data = resp.data
+      let recyclable = data.material
+      let matchedMaterial = matchTerm(recyclable)
+      this.props.updateFilterTerm(matchedMaterial)
+      this.props.updateMapLayers()
+      // this.setState({filterType: matchedMaterial})
+    })
+    .finally(() => {
+      this.props.setModalVisibility(false)
+    })
   }
 
   componentDidMount() {
@@ -133,6 +180,20 @@ class Main extends React.Component {
             </ReactMapGL>
           </div>
         </div>
+
+        <ReactModal
+          isOpen={ this.props.showModal }
+          contentLabel="Minimal Modal Example"
+          className="upload--modal"
+          // overlayClassName="modal--overlay"
+        >
+          <input className="modal-element" type="file" onChange={this.fileFieldHandler.bind(this)} />
+          <button className="modal-button modal-element" onClick={this.callImageRecognition.bind(this)}>Upload</button>
+          <br/>
+          <div style={{marginBottom: "auto"}}>
+            <button onClick={() => this.props.setModalVisibility(false)}>Close Modal</button>
+          </div>
+        </ReactModal>
 
       </div>
     )

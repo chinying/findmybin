@@ -60,6 +60,10 @@
   color: white;
   font-size: 1em !important;
 }
+.modal-button:hover {
+  background: #373B44;
+  transition: .5s ease;
+}
 
 .btn-6d:hover {
   background: transparent;

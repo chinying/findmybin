@@ -23,6 +23,7 @@ import {
   UPDATE_FILTER_TERM,
   UPDATE_VIEWPORT,
   SET_LOCATION_PIN,
+  SET_MODAL_VISIBILITY,
   SET_NEAREST_RESULTS,
   SET_PIN_VISIBILITY,
   SET_SEARCH_RESULTS,
@@ -36,6 +37,7 @@ const mapStateToProps = state => {
     searchResults: state.geolocation.results,
     viewport: state.mainMap.viewport,
     pointsLayer: _.find(state.mainMap.layers, {id: 'geojson'}),
+    filterTerm: state.mainMap.filterTerm
   }
 }
 
@@ -88,14 +90,19 @@ const mapDispatchToProps = (dispatch) => ({
 
   updateGeoJsonScatter: () => dispatch({
     type: UPDATE_GEOJSON_SCATTER
-  })
+  }),
+
+  setModalVisibility: (bool) => dispatch({
+    type: SET_MODAL_VISIBILITY,
+    payload: bool
+  }),
 });
 
 // DeckGL react component
 class SearchBox extends React.Component {
   constructor(props) {
     super(props)
-    this.updateFilterTerm = _.debounce(this.updateFilterTerm.bind(this), 300)
+    this.updateGeoJsonScatter = _.debounce(this.updateGeoJsonScatter.bind(this), 300)
   }
 
   selectHandler(term) {
@@ -117,16 +124,14 @@ class SearchBox extends React.Component {
     this.props.updateClosestPoints(closest)
   }
 
-  updateFilterTerm (term) {
-    console.log('this should be debounced')
-    this.props.updateFilterTerm(term)
+  updateGeoJsonScatter() {
     this.props.updateGeoJsonScatter()
   }
 
   render() {
     return (
       <div className="topbar-contents">
-        <span>
+        <div>
         Search:
         <Autocomplete
           inputProps={{className: 'input-box'}}
@@ -147,12 +152,20 @@ class SearchBox extends React.Component {
             this.selectHandler.bind(this)
           }
         />
-        </span>
+        </div>
+
+        <div>
+          <button onClick={() => this.props.setModalVisibility(true) }>Upload</button>
+        </div>
+
         <div>
           Filter by:
           <input type="text" className='input-box'
             value = { this.props.filterTerm }
-            onChange = {e => this.updateFilterTerm(e.target.value)}
+            onChange = {e => {
+              this.props.updateFilterTerm(e.target.value);
+              this.updateGeoJsonScatter()
+            }}
           />
         </div>
       </div>
