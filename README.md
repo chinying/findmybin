@@ -21,6 +21,11 @@ Get your datasets from data.gov.sg
 * https://data.gov.sg/dataset/2nd-hand-goods-collection-points
 * https://data.gov.sg/dataset/e-waste-recycling
 
+Use [togeojson](https://github.com/mapbox/togeojson) to convert the above datasets to geojson.
+
+<!--
+Run `./transform.sh` to clean up and merge the geojson files. 
+-->
 
 ## Todo
 
@@ -37,5 +42,6 @@ Get your datasets from data.gov.sg
 [] hack together something to show route on map to selected data point
 
 ## Refactor
-[] Add redux - nearly everything is in Main.jsx, but it is difficult to separate them because most of them are tied to state changes
-[] Lint
+[x] Add redux - mostly cleaned up now
+[x] Lint - prettier used
+[] Produce a better system for classification
