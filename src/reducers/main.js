@@ -6,18 +6,18 @@ import {
   UPDATE_FILTER_TERM,
   UPDATE_GEOJSON_SCATTER,
   UPDATE_VIEWPORT,
-  UPDATE_VIEWPORT_SIZE,
-} from "@/constants/main"
+  UPDATE_VIEWPORT_SIZE
+} from "@/constants/main";
 
-import * as _ from 'lodash'
+import * as _ from "lodash";
 
-import { pointColours } from '@/mapComponents'
-import { filterPoints } from '@/utils/computeDistances'
-import { layerReplacementFactory } from '@/utils/geocode'
-import { ScatterplotLayer } from 'deck.gl'
+import { pointColours } from "@/mapComponents";
+import { filterPoints } from "@/utils/computeDistances";
+import { layerReplacementFactory } from "@/utils/geocode";
+import { ScatterplotLayer } from "deck.gl";
 
-let geoJsonLayerName = 'geojson'
-let highlightLayerName = 'highlighted-point'
+let geoJsonLayerName = "geojson";
+let highlightLayerName = "highlighted-point";
 
 let defaultState = {
   originalScatterPlot: [],
@@ -46,7 +46,7 @@ let defaultState = {
   filterTerm: "",
   showModal: false,
   loading: false
-}
+};
 
 export default (state = defaultState, action) => {
   switch (action.type) {
@@ -60,7 +60,7 @@ export default (state = defaultState, action) => {
         ...state.viewport,
         height: action.payload.height,
         width: action.payload.width
-      }
+      };
       return {
         ...state,
         viewport
@@ -69,10 +69,13 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         originalScatterPlot: action.payload
-      }
+      };
     case UPDATE_GEOJSON_SCATTER:
-      console.log('points', state.disposablePoints)
-      let filteredPoints = filterPoints(state.disposablePoints, state.filterTerm)
+      console.log("points", state.disposablePoints);
+      let filteredPoints = filterPoints(
+        state.disposablePoints,
+        state.filterTerm
+      );
       let binsLayer = new ScatterplotLayer({
         id: geoJsonLayerName,
         data: filteredPoints,
@@ -80,11 +83,15 @@ export default (state = defaultState, action) => {
         radiusMinPixels: 1,
         getPosition: d => d.geometry.coordinates,
         getColor: d => pointColours(d.waste_type),
-        pickable: true,
-      })
+        pickable: true
+      });
       return {
         ...state,
-        layers: layerReplacementFactory(state.layers, geoJsonLayerName, binsLayer)
+        layers: layerReplacementFactory(
+          state.layers,
+          geoJsonLayerName,
+          binsLayer
+        )
       };
     case UPDATE_DISPOSABLE_POINTS:
       return {
@@ -99,21 +106,25 @@ export default (state = defaultState, action) => {
         getPosition: d => d.geometry.coordinates,
         getColor: [189, 85, 50],
         pickable: false
-      })
+      });
       return {
         ...state,
-        layers: layerReplacementFactory(state.layers, highlightLayerName, newHighlightedLayer)
+        layers: layerReplacementFactory(
+          state.layers,
+          highlightLayerName,
+          newHighlightedLayer
+        )
       };
     case UPDATE_FILTER_TERM:
       return {
         ...state,
         filterTerm: action.payload
-      }
+      };
     case SET_MODAL_VISIBILITY:
       return {
         ...state,
         showModal: action.payload
-      }
+      };
     default:
       return state;
   }

@@ -2,8 +2,8 @@ import {
   SET_LOCATION_PIN,
   SET_SEARCH_TERM,
   SET_SEARCH_RESULTS,
-  SET_PIN_VISIBILITY,
-} from "@/constants/main"
+  SET_PIN_VISIBILITY
+} from "@/constants/main";
 
 let defaultState = {
   term: "",
@@ -12,8 +12,8 @@ let defaultState = {
     visible: false,
     latitude: 1.3521,
     longitude: 103.8198
-  },
-}
+  }
+};
 
 export default (state = defaultState, action) => {
   switch (action.type) {
@@ -23,17 +23,17 @@ export default (state = defaultState, action) => {
         results: action.payload
       };
     case SET_SEARCH_TERM:
-      return{
+      return {
         ...state,
         term: action.payload
       };
     case SET_LOCATION_PIN:
-      let {latitude, longitude} = action.payload
+      let { latitude, longitude } = action.payload;
       let pin = {
         ...state.pin,
         latitude,
         longitude
-      }
+      };
       return {
         ...state,
         pin
@@ -42,11 +42,11 @@ export default (state = defaultState, action) => {
       let pin = {
         ...state.pin,
         visible: action.payload
-      }
+      };
       return {
         ...state,
         pin
-      }
+      };
     }
     default:
       return state;
