@@ -1,5 +1,6 @@
 import {
   ADD_HIGHLIGHT_LAYER,
+  SET_INITIAL_SCATTER_POINTS,
   UPDATE_DISPOSABLE_POINTS,
   UPDATE_LAYERS,
   UPDATE_GEOJSON_SCATTER,
@@ -10,9 +11,15 @@ import {
 import * as _ from 'lodash'
 
 import { pointColours } from '@/mapComponents'
+import { layerReplacementFactory } from '@/utils/geocode'
 import { ScatterplotLayer } from 'deck.gl'
 
+let geoJsonLayerName = 'geojson'
+let highlightLayerName = 'highlighted-point'
+
 let defaultState = {
+  originalScatterPlot: [],
+  scatterPlotDownloaded: false,
   viewport: {
     longitude: 103.8198,
     latitude: 1.3521,
@@ -25,7 +32,11 @@ let defaultState = {
   disposablePoints: [],
   layers: [
     new ScatterplotLayer({
-      id: 'highlighted-point',
+      id: geoJsonLayerName,
+      data: []
+    }),
+    new ScatterplotLayer({
+      id: highlightLayerName,
       data: [],
       getPosition: d => d.geometry.coordinates
     })
@@ -50,26 +61,26 @@ export default (state = defaultState, action) => {
         ...state,
         viewport
       };
-    case UPDATE_GEOJSON_SCATTER:
-      console.log('points', state.disposablePoints)
+    case SET_INITIAL_SCATTER_POINTS:
       return {
         ...state,
-        layers: [
-          new ScatterplotLayer({
-            id: 'geojson',
-            data: state.disposablePoints,
-            radiusScale: 10,
-            radiusMinPixels: 1,
-            getPosition: d => d.geometry.coordinates,
-            getColor: d => pointColours(d.waste_type),
-            pickable: true,
-          }),
-          new ScatterplotLayer({
-            id: 'highlighted-point',
-            data: [],
-            getPosition: d => d.geometry.coordinates
-          })
-        ]
+        originalScatterPlot: action.payload
+      }
+    case UPDATE_GEOJSON_SCATTER:
+      console.log('points', state.disposablePoints)
+
+      let binsLayer = new ScatterplotLayer({
+        id: geoJsonLayerName,
+        data: state.disposablePoints,
+        radiusScale: 10,
+        radiusMinPixels: 1,
+        getPosition: d => d.geometry.coordinates,
+        getColor: d => pointColours(d.waste_type),
+        pickable: true,
+      })
+      return {
+        ...state,
+        layers: layerReplacementFactory(state.layers, geoJsonLayerName, binsLayer)
       };
     case UPDATE_DISPOSABLE_POINTS:
       return {
@@ -77,25 +88,17 @@ export default (state = defaultState, action) => {
         disposablePoints: action.payload
       };
     case ADD_HIGHLIGHT_LAYER:
-      let layers = state.layers
-      let layerName = 'highlighted-point'
-      let highlightedLayer = _.find(layers, {id: layerName})
-      let highlightedLayerIndex = _.findIndex(layers, {id: layerName})
-
       let newHighlightedLayer = new ScatterplotLayer({
-        ...highlightedLayer.props,
-        id: layerName,
+        id: highlightLayerName,
         data: action.payload,
         radiusScale: 15,
         getPosition: d => d.geometry.coordinates,
         getColor: [189, 85, 50],
         pickable: false
       })
-      layers.splice(highlightedLayerIndex, 1) // note that this statement *returns* the spliced item
       return {
         ...state,
-        layers: [...layers, newHighlightedLayer]
-        // layers
+        layers: layerReplacementFactory(state.layers, highlightLayerName, newHighlightedLayer)
       };
     default:
       return state;

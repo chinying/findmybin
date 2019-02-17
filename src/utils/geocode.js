@@ -1,4 +1,5 @@
 import axios from 'axios'
+import * as _ from 'lodash'
 import { FlyToInterpolator } from 'react-map-gl'
 
 let search = function(searchTerm) {
@@ -18,4 +19,10 @@ let flyInterpolatorFactory = (location) => {
   }
 }
 
-export { flyInterpolatorFactory, search }
+let layerReplacementFactory = (layers, layerName, newLayer) => {
+  let removeIndex = _.findIndex(layers, {id: layerName})
+  layers.splice(removeIndex, 1) // note that this statement *returns* the spliced item
+  return [...layers, newLayer]
+}
+
+export { flyInterpolatorFactory, layerReplacementFactory, search }
