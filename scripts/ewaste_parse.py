@@ -67,4 +67,6 @@ if __name__ == "__main__":
         new_json_obj.append(obj)
         parser.cleanup()
 
-    print(json.dumps(new_json_obj))
+    f = open('ewaste.json', 'w')
+    f.write(json.dumps(new_json_obj))
+    f.close()

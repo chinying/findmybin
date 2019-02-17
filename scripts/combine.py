@@ -12,4 +12,6 @@ f2 = open("./src/data/2ndhandgoods.json")
 j2 = json.loads(f2.read())
 f2.close()
 
-print(json.dumps(j0 + j1 + j2))
+outfile = open("./src/data/combined.json", "w")
+outfile.write(json.dumps(j0 + j1 + j2))
+outfile.close()

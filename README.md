@@ -11,7 +11,10 @@ Also an excuse to play with deck.gl
 
 ---
 
-## datasets
+## Background
+This project spawned from our team's annual Hackthon, where we decided to create a tool that allows users to find their nearest recycling bin in Singapore.
+
+## Datasets
 Get your datasets from data.gov.sg
 
 * https://data.gov.sg/dataset/recycling-bins
@@ -19,16 +22,20 @@ Get your datasets from data.gov.sg
 * https://data.gov.sg/dataset/e-waste-recycling
 
 
-## todo
+## Todo
 
-### webpack
+### Webpack
 [x] basic webpack config  
 [x] dev server + hot reloading  
 [] webpack config for prod
 
-### deck.gl
+### Deck.gl
 [x] read all bins from geojson and dump on map as is  
 [] heatmap?  
 [x] calculate distance  
 [] click data point to pan + show info about data point  
 [] hack together something to show route on map to selected data point
+
+## Refactor
+[] Add redux - nearly everything is in Main.jsx, but it is difficult to separate them because most of them are tied to state changes
+[] Lint

@@ -1,4 +1,6 @@
 import axios from 'axios'
+import * as _ from 'lodash'
+import { FlyToInterpolator } from 'react-map-gl'
 
 let search = function(searchTerm) {
   let token = process.env.MAPBOX_ACCESS_TOKEN;
@@ -6,4 +8,21 @@ let search = function(searchTerm) {
   return axios.get(url)
 }
 
-export { search }
+let flyInterpolatorFactory = (location) => {
+  let {longitude, latitude} = location
+  return {
+    longitude,
+    latitude,
+    zoom: 15,
+    transitionInterpolator: new FlyToInterpolator(),
+    transitionDuration: 1000
+  }
+}
+
+let layerReplacementFactory = (layers, layerName, newLayer) => {
+  let removeIndex = _.findIndex(layers, {id: layerName})
+  layers.splice(removeIndex, 1) // note that this statement *returns* the spliced item
+  return [...layers, newLayer]
+}
+
+export { flyInterpolatorFactory, layerReplacementFactory, search }
