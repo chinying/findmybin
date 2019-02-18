@@ -10,7 +10,22 @@ let results = {
   metal: 0,
   others: 2,
   "e-waste": 1,
-  recyclable: 0
+  recyclable: 0,
+  straw: 2,
+  receipt: 0,
+  calendar: 0,
+  book: 0,
+  envelope: 0,
+  "paper bag": 0,
+  tissue: 2,
+  "plastic bottle": 0,
+  "glass bottle": 0,
+  "light bulb": 1,
+  food: 2,
+  medicine: 2,
+  diaper: 2,
+  battery: 1,
+  newspaper: 0
 };
 
 let matchTerm = (term = "") => {
