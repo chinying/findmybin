@@ -11,6 +11,7 @@ import { matchTerm } from "@/utils/textMatch";
 import LocationMarker from "./LocationMarker";
 import Results from "./Results";
 import SearchBox from "@/components/SearchBox";
+import Loading from "@/components/Loading";
 import ReactModal from "react-modal";
 
 import "@/styles/main.css";
@@ -26,20 +27,21 @@ import {
   SET_MODAL_VISIBILITY,
   UPDATE_DISPOSABLE_POINTS,
   UPDATE_FILTER_TERM,
+  UPDATE_LOADING,
   UPDATE_VIEWPORT,
   UPDATE_VIEWPORT_SIZE,
   UPDATE_GEOJSON_SCATTER
 } from "@/constants/main";
 
 const mapStateToProps = state => {
-  // console.log("mapstatetoprops", state)
   return {
     viewport: state.mainMap.viewport,
     points: state.mainMap.disposablePoints,
     layers: state.mainMap.layers,
     pin: state.geolocation.pin,
     filterTypes: state.geolocation.filterTerm,
-    showModal: state.mainMap.showModal
+    showModal: state.mainMap.showModal,
+    loading: state.mainMap.loading
   };
 };
 
@@ -72,6 +74,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch({
       type: UPDATE_FILTER_TERM,
       payload: term
+    }),
+  updateLoading: bool =>
+    dispatch({
+      type: UPDATE_LOADING,
+      payload: bool
     })
 });
 
@@ -109,6 +116,17 @@ class Main extends React.Component {
     }
   }
 
+  renderLoader() {
+    console.log("render loading", this.props.loading);
+    if (this.props.loading) {
+      return (
+        <div className="loading-component">
+          <Loading text="Loading" />
+        </div>
+      );
+    }
+  }
+
   fileFieldHandler(e) {
     let files = e.target.files;
     let selectedFile = files[0];
@@ -116,10 +134,9 @@ class Main extends React.Component {
   }
 
   callImageRecognition() {
+    this.props.updateLoading(true);
     let formData = new FormData();
-    console.log(this.state, this.state.imageFile);
     formData.append("file", this.state.imageFile);
-    // debugger
     axios({
       method: "post",
       url: `${PREDICTION_API_URL}/predict`,
@@ -136,6 +153,7 @@ class Main extends React.Component {
       })
       .finally(() => {
         this.props.setModalVisibility(false);
+        this.props.updateLoading(false);
       });
   }
 
@@ -183,6 +201,7 @@ class Main extends React.Component {
                 onViewPortChange={this.props.updateViewport}
               >
                 {this.renderLocationPin.bind(this)}
+                {this.renderLoader.bind(this)}
               </DeckGL>
             </ReactMapGL>
           </div>
@@ -222,5 +241,3 @@ export default connect(
   mapDispatchToProps
 )(Main);
 export { Main, mapStateToProps };
-
-// export default Main;

@@ -5,6 +5,7 @@ import {
   UPDATE_DISPOSABLE_POINTS,
   UPDATE_FILTER_TERM,
   UPDATE_GEOJSON_SCATTER,
+  UPDATE_LOADING,
   UPDATE_VIEWPORT,
   UPDATE_VIEWPORT_SIZE
 } from "@/constants/main";
@@ -124,6 +125,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         showModal: action.payload
+      };
+    case UPDATE_LOADING:
+      return {
+        ...state,
+        loading: action.payload
       };
     default:
       return state;
