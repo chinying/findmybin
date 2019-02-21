@@ -36,7 +36,7 @@
   position: absolute;
   top: 200px;
   left: calc(50% - 200px);
-  z-index: 99999999;
+  z-index: 99;
   display: block;
   background: white;
   color: red;
@@ -91,4 +91,13 @@
   position: absolute;
   right: 0;
   z-index: 9999999;
+}
+
+.loading-component {
+  z-index: 999999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }

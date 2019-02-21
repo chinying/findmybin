@@ -1,10 +1,8 @@
-import {
-  SET_NEAREST_RESULTS
-} from "@/constants/main"
+import { SET_NEAREST_RESULTS } from "@/constants/main";
 
 let defaultState = {
   results: []
-}
+};
 
 export default (state = defaultState, action) => {
   switch (action.type) {
@@ -12,7 +10,7 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         results: action.payload
-      }
+      };
     default:
       return state;
   }
