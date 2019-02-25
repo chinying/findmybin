@@ -45,11 +45,11 @@ class ResultItem extends Component {
         // onClick = {this.props.clickEvent(result.properties.postal) }
       >
         {result.properties.building !== "<Null>" ? (
-          <h4>{result.properties.building}</h4>
+          <p className="result-location">{result.properties.building}</p>
         ) : (
-          <h4>{result.properties.road}</h4>
+          <p className="result-location">{result.properties.road}</p>
         )}
-        <span>Type: {result.waste_type}</span>
+        <span><b>Type:</b> {result.waste_type}</span>
         <br />
         <span>
           {result.properties.blk} {result.properties.road}

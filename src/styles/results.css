@@ -1,9 +1,21 @@
 
 .result-item {
   /* font-family: 'Helvetica' !important; */
-  border-radius: 5px;
+  border-radius: 4px;
   background: #fff ;
   color: black;
+  width: 300px;
+  max-width: calc(40vw - 3.6em);
   padding: 10px;
-  margin: 5px;
+  margin: 8px 12px 8px 12px;
+}
+
+p {
+  margin: 8px auto 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.result-item > span {
+  font-size: 14px;
 }

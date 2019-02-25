@@ -137,11 +137,11 @@ class SearchBox extends React.Component {
 
   render() {
     return (
-      <div className="topbar-contents">
-        <div>
-          Search:
+      <div className="searchbar-contents">
+        <div className="filter">
           <Autocomplete
-            inputProps={{ className: "input-box" }}
+            inputProps={{ className: "input-box", placeholder: "Enter your location"}}
+            wrapperStyle={{ display: 'flex', width: '87.5%' }}
             getItemValue={item => item.text}
             items={this.props.searchResults}
             renderItem={(item, isHighlighted) => (
@@ -158,25 +158,21 @@ class SearchBox extends React.Component {
             }}
             onSelect={this.selectHandler.bind(this)}
           />
+          <i className="btn-search"></i>
         </div>
 
-        <div>
-          <button onClick={() => this.props.setModalVisibility(true)}>
-            Upload
-          </button>
-        </div>
-
-        <div>
-          Filter by:
+        <div className="filter">
           <input
             type="text"
             className="input-box"
+            placeholder="Describe object or upload photo"
             value={this.props.filterTerm}
             onChange={e => {
               this.props.updateFilterTerm(e.target.value);
               this.updateGeoJsonScatter();
             }}
           />
+          <button className="btn-upload" onClick={() => this.props.setModalVisibility(true)}></button>
         </div>
       </div>
     );

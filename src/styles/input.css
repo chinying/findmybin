@@ -1,11 +1,47 @@
+.filter {
+  display: flex;
+  align-items: center;
+  height: 36px;  
+  background-color: #ffffff;
+  border-radius: 4px;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
 .input-box {
-  width: 200px;
+  width: 85%;
   padding: 3px;
-  font-size: 20px;
+  font-size: 15px;
   background: #fff;
-  border: solid 2px #73C8A9;
-  box-shadow: 0px 0px 0px 2px transparent;
-  color: black;
-  -webkit-transition: box-shadow 0.3s;
-  transition: box-shadow 0.3s;
+  border: none;
+  border-radius: 4px;
+  color: #303030;
+  padding-left: 8px;
+}
+
+.btn-upload {
+  cursor: pointer;
+  background-image: url("/src/styles/static/upload.svg");
+  background-repeat: no-repeat;
+  background-color: Transparent;
+  background-position: center center;
+  width: 24px;
+  height: 24px;
+  padding: 17.5px 18.5px 16.5px 18.5px;
+  border-radius: 0px 4px 4px 0px;
+}
+
+.btn-search {
+  background-image: url("/src/styles/static/search.svg");
+  background-repeat: no-repeat;
+  background-color: Transparent;
+  background-position: center center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  margin: 0 auto;
+}
+
+.btn-upload:hover {
+  border-width: 2px;
 }

@@ -178,14 +178,14 @@ class Main extends React.Component {
     return (
       <div>
         <div className="sidebar-container">
+          <SearchBox />
           <div className="results-list-container">
-            Nearest disposable drop-off locations:
             <Results />
           </div>
         </div>
         <div className="map-div-container">
           <div className="topbar">
-            <SearchBox />
+            <i className="trashy-logo"></i>
           </div>
           <div className="map-body">
             <ReactMapGL
@@ -210,26 +210,28 @@ class Main extends React.Component {
         <ReactModal
           isOpen={this.props.showModal}
           contentLabel="Minimal Modal Example"
-          className="upload--modal"
+          className="upload-modal"
           // overlayClassName="modal--overlay"
         >
-          <input
-            className="modal-element"
-            type="file"
-            onChange={this.fileFieldHandler.bind(this)}
-          />
+          <button className="btn-close-modal" onClick={() => this.props.setModalVisibility(false)}></button>
+          <div className='upload-form'>
+            <label htmlFor='fileUpload' className="btn-choose-file">
+              CHOOSE FILE
+            </label>
+            <span id='fileSelected' className="selected-file">{(this.state.imageFile === null)? 'No file chosen': this.state.imageFile.name}</span>
+            <input
+              id='fileUpload'
+              type="file"
+              onChange={this.fileFieldHandler.bind(this)}
+            />
+          </div>
           <button
             className="modal-button modal-element"
             onClick={this.callImageRecognition.bind(this)}
           >
-            Upload
+            UPLOAD
           </button>
           <br />
-          <div style={{ marginBottom: "auto" }}>
-            <button onClick={() => this.props.setModalVisibility(false)}>
-              Close Modal
-            </button>
-          </div>
         </ReactModal>
       </div>
     );

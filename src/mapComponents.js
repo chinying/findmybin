@@ -17,4 +17,4 @@ let pointColours = wasteType => {
   }
 };
 
-export { pointColours, layers };
+export { pointColours };
