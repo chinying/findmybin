@@ -21,7 +21,7 @@
 
 .btn-upload {
   cursor: pointer;
-  background-image: url("/src/styles/static/upload.svg");
+  background-image: url("/src/styles/static/camera.svg");
   background-repeat: no-repeat;
   background-color: Transparent;
   background-position: center center;
@@ -44,4 +44,53 @@
 
 .btn-upload:hover {
   border-width: 2px;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+  background: url("/src/styles/static/caret-down.svg") no-repeat right center;
+}
+
+.filter-box {
+  width: 97.5%;
+  font-size: 15px;
+  border: none;
+  color: #303030;
+  padding-left: 8px;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 240px;
+  background-color: #505050;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  overflow: visible;
+
+  position: absolute;
+  z-index: 99;
+  top: 80px;
+  right: 60px;
+  font-size: 13px;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+}
+
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #505050;
 }

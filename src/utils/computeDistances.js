@@ -1,9 +1,10 @@
 import { point as turfPoint, distance } from "@turf/turf";
 import { matchTerm } from "./textMatch";
 
-let closestPoints = (points, location) => {
+let closestPoints = (points, location, filterTerm) => {
   let referencePoint = turfPoint([location.longitude, location.latitude]);
-  let distances = points
+  let filteredPoints = filterPoints(points, filterTerm)
+  let distances = filteredPoints
     .map((p, idx) => {
       let point = turfPoint(p.geometry.coordinates);
       return { dist: distance(point, referencePoint), index: idx };
@@ -20,6 +21,7 @@ let closestPoints = (points, location) => {
 
 let filterPoints = (points, wasteType) => {
   let matchedType = matchTerm(wasteType);
+  console.log(matchedType)
   return matchedType === "all" || matchedType === ""
     ? points
     : points.filter(d => d.waste_type === matchedType);

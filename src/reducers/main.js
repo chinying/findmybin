@@ -7,7 +7,8 @@ import {
   UPDATE_GEOJSON_SCATTER,
   UPDATE_LOADING,
   UPDATE_VIEWPORT,
-  UPDATE_VIEWPORT_SIZE
+  UPDATE_VIEWPORT_SIZE,
+  UPDATE_RELOAD_RESULT
 } from "@/constants/main";
 
 import * as _ from "lodash";
@@ -46,7 +47,8 @@ let defaultState = {
   ],
   filterTerm: "",
   showModal: false,
-  loading: false
+  loading: false,
+  reloadResult: false
 };
 
 export default (state = defaultState, action) => {
@@ -130,6 +132,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         loading: action.payload
+      };
+    case UPDATE_RELOAD_RESULT:
+      return {
+        ...state,
+        reloadResult: action.payload
       };
     default:
       return state;

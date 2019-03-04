@@ -10,6 +10,29 @@
   margin: 8px 12px 8px 12px;
 }
 
+.result-item > i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  float: right;
+}
+
+.recycling {
+  background-color: #34c47c;
+}
+
+.electronic-waste {
+  background-color: #002560;
+}
+
+.cash-for-trash {
+  background-color: #FEDF00;
+}
+
+.second-hand {
+  background-color: #FF0080;
+}
+
 p {
   margin: 8px auto 8px;
   font-size: 16px;

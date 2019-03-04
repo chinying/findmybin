@@ -30,7 +30,8 @@ import {
   UPDATE_LOADING,
   UPDATE_VIEWPORT,
   UPDATE_VIEWPORT_SIZE,
-  UPDATE_GEOJSON_SCATTER
+  UPDATE_GEOJSON_SCATTER,
+  UPDATE_RELOAD_RESULT
 } from "@/constants/main";
 
 const mapStateToProps = state => {
@@ -78,6 +79,11 @@ const mapDispatchToProps = dispatch => ({
   updateLoading: bool =>
     dispatch({
       type: UPDATE_LOADING,
+      payload: bool
+    }),
+  updateReloadResult: bool =>
+    dispatch({
+      type: UPDATE_RELOAD_RESULT,
       payload: bool
     })
 });
@@ -135,10 +141,12 @@ class Main extends React.Component {
 
   callImageRecognition() {
     this.props.updateLoading(true);
+    this.props.updateReloadResult(true);
     let formData = new FormData();
     formData.append("file", this.state.imageFile);
     axios({
       method: "post",
+      // url: `${PREDICTION_API_URL}/predict`,
       url: `${PREDICTION_API_URL}/predict`,
       data: formData,
       config: { headers: { "Content-Type": "multipart/form-data" } }
@@ -154,6 +162,7 @@ class Main extends React.Component {
       .finally(() => {
         this.props.setModalVisibility(false);
         this.props.updateLoading(false);
+        this.props.updateReloadResult(false);
       });
   }
 
@@ -205,6 +214,17 @@ class Main extends React.Component {
               </DeckGL>
             </ReactMapGL>
           </div>
+          <dl className="legend">
+            Legend
+            <dt className="recycling"></dt>
+              <dd>Recycling bins</dd>
+            <dt className="electronic-waste"></dt>
+              <dd>Electronic waste</dd>
+            <dt className="cash-for-trash"></dt>
+              <dd>Cash for trash</dd>
+            <dt className="second-hand"></dt>
+              <dd>2nd hand goods</dd>
+          </dl>
         </div>
 
         <ReactModal
