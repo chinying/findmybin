@@ -123,7 +123,6 @@ class Main extends React.Component {
   }
 
   renderLoader() {
-    console.log("render loading", this.props.loading);
     if (this.props.loading) {
       return (
         <div className="loading-component">
