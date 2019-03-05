@@ -1,7 +1,7 @@
 .filter {
   display: flex;
   align-items: center;
-  height: 36px;  
+  height: 36px;
   background-color: #ffffff;
   border-radius: 4px;
   margin-left: 12px;
@@ -21,7 +21,7 @@
 
 .btn-upload {
   cursor: pointer;
-  background-image: url("/src/styles/static/camera.svg");
+  background-image: url("./static/camera.svg");
   background-repeat: no-repeat;
   background-color: Transparent;
   background-position: center center;
@@ -32,7 +32,7 @@
 }
 
 .btn-search {
-  background-image: url("/src/styles/static/search.svg");
+  background-image: url("./static/search.svg");
   background-repeat: no-repeat;
   background-color: Transparent;
   background-position: center center;
@@ -52,7 +52,7 @@ select {
   appearance: none;
   text-indent: 1px;
   text-overflow: '';
-  background: url("/src/styles/static/caret-down.svg") no-repeat right center;
+  background: url("./static/caret-down.svg") no-repeat right center;
 }
 
 .filter-box {
