@@ -118,10 +118,10 @@ class SearchBox extends React.Component {
       this.updateGeoJsonScatter.bind(this),
       300
     );
-    this.filterHandler = this.filterHandler.bind(this)
+    this.filterHandler = this.filterHandler.bind(this);
     this.state = {
       description: ""
-    }
+    };
   }
 
   selectHandler(term) {
@@ -146,42 +146,51 @@ class SearchBox extends React.Component {
 
   updateGeoJsonScatter() {
     this.props.updateGeoJsonScatter();
-    this.filterHandler();    
+    this.filterHandler();
   }
 
-  filterHandler () {
-    let selectedResult = 
-      { "id":"country.4869687774116560",
-        "type":"Feature",
-        "place_type":["country"],
-        "relevance":1,
-        "properties":
-          { "short_code":"sg",
-            "wikidata":"Q334"},"text":"Singapore","place_name":"Singapore","bbox":[103.5742042,1.1308576,104.406654,1.4779199],"center":[103.8,1.3],"geometry":{"type":"Point","coordinates":[103.8,1.3]}}
+  filterHandler() {
+    let selectedResult = {
+      id: "country.4869687774116560",
+      type: "Feature",
+      place_type: ["country"],
+      relevance: 1,
+      properties: { short_code: "sg", wikidata: "Q334" },
+      text: "Singapore",
+      place_name: "Singapore",
+      bbox: [103.5742042, 1.1308576, 104.406654, 1.4779199],
+      center: [103.8, 1.3],
+      geometry: { type: "Point", coordinates: [103.8, 1.3] }
+    };
     if (this.props.searchResults.length) {
-      selectedResult = _.find(this.props.searchResults, { text: this.props.searchTerm }); 
+      selectedResult = _.find(this.props.searchResults, {
+        text: this.props.searchTerm
+      });
     }
-    this.computeDistance(selectedResult)
+    this.computeDistance(selectedResult);
   }
 
-  isSelected (binType, filterTerm) {
+  isSelected(binType, filterTerm) {
     if (binType === filterTerm) {
-      return 'selected'
+      return "selected";
     } else {
-      return null
+      return null;
     }
   }
 
   render() {
     if (this.props.reloadResultBar) {
-      this.filterHandler()
+      this.filterHandler();
     }
     return (
       <div className="searchbar-contents">
         <div className="filter">
           <Autocomplete
-            inputProps={{ className: "input-box", placeholder: "Enter your location"}}
-            wrapperStyle={{ display: 'flex', width: '87.5%' }}
+            inputProps={{
+              className: "input-box",
+              placeholder: "Enter your location"
+            }}
+            wrapperStyle={{ display: "flex", width: "87.5%" }}
             getItemValue={item => item.text}
             items={this.props.searchResults}
             renderItem={(item, isHighlighted) => (
@@ -198,7 +207,7 @@ class SearchBox extends React.Component {
             }}
             onSelect={this.selectHandler.bind(this)}
           />
-          <i className="btn-search"></i>
+          <i className="btn-search" />
         </div>
 
         <div className="filter">
@@ -206,39 +215,63 @@ class SearchBox extends React.Component {
             type="text"
             className="input-box"
             placeholder="Describe object or upload photo"
-            onChange={(e) => {
-              this.setState({description: e.target.value})}
-            }
-            onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  let matchedMaterial = new Promise((resolve) => {
-                    setTimeout(resolve(matchTerm(this.state.description)), 100);
-                  })
-                  matchedMaterial.then((d) => {
-                    this.props.updateFilterTerm(d);
-                    this.updateGeoJsonScatter();
-                  })
-                }
+            onChange={e => {
+              this.setState({ description: e.target.value });
+            }}
+            onKeyPress={e => {
+              if (e.key === "Enter") {
+                let matchedMaterial = new Promise(resolve => {
+                  setTimeout(resolve(matchTerm(this.state.description)), 100);
+                });
+                matchedMaterial.then(d => {
+                  this.props.updateFilterTerm(d);
+                  this.updateGeoJsonScatter();
+                });
               }
-            } 
+            }}
           />
-          <button className="btn-upload tooltip" onClick={() => this.props.setModalVisibility(true)}>
-            <span className="tooltip-text">Upload an image to see if it's recyclable!</span>
+          <button
+            className="btn-upload tooltip"
+            onClick={() => this.props.setModalVisibility(true)}
+          >
+            <span className="tooltip-text">
+              Upload an image to see if it's recyclable!
+            </span>
           </button>
         </div>
-        
+
         <div className="filter">
-          <select 
+          <select
             className="filter-box"
             onChange={e => {
               this.props.updateFilterTerm(e.target.value);
               this.updateGeoJsonScatter();
             }}
           >
-            <option selected={this.isSelected('All', this.props.filterTerm)} value="All">All</option>
-            <option selected={this.isSelected('Recyclable', this.props.filterTerm)} value="Recyclable">Recyclable</option>
-            <option selected={this.isSelected('E-waste', this.props.filterTerm)} value="E-waste">E-waste</option>
-            <option selected={this.isSelected('2ndhand', this.props.filterTerm)} value="2ndhand">2nd Hand Goods</option>
+            <option
+              selected={this.isSelected("All", this.props.filterTerm)}
+              value="All"
+            >
+              All
+            </option>
+            <option
+              selected={this.isSelected("Recyclable", this.props.filterTerm)}
+              value="Recyclable"
+            >
+              Recyclable
+            </option>
+            <option
+              selected={this.isSelected("E-waste", this.props.filterTerm)}
+              value="E-waste"
+            >
+              E-waste
+            </option>
+            <option
+              selected={this.isSelected("2ndhand", this.props.filterTerm)}
+              value="2ndhand"
+            >
+              2nd Hand Goods
+            </option>
           </select>
         </div>
       </div>

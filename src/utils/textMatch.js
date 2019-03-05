@@ -4,7 +4,7 @@
 
 let wasteTypes = ["Recyclable", "E-waste", "2ndhand", "Unknown"];
 let results = {
-  recyclable: 0,  
+  recyclable: 0,
   "e-waste": 1,
   "2ndhand": 2,
   others: 3,

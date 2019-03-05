@@ -13,15 +13,15 @@ function truncate(str, len) {
 }
 
 const binType = type => {
-  switch(type) {
+  switch (type) {
     case "Recyclable":
-      return "recycling"
+      return "recycling";
     case "E-waste":
-      return "electronic-waste"
+      return "electronic-waste";
     case "2ndhand":
-      return "second-hand"
+      return "second-hand";
   }
-}
+};
 
 const mapStateToProps = state => {
   return {};
@@ -55,13 +55,15 @@ class ResultItem extends Component {
         onClick={() => this.props.clickEvent(result)}
         // onClick = {this.props.clickEvent(result.properties.postal) }
       >
-        <i className={binType(result.waste_type)}></i>
+        <i className={binType(result.waste_type)} />
         {result.properties.building !== "<Null>" ? (
           <p className="result-location">{result.properties.building}</p>
         ) : (
           <p className="result-location">{result.properties.road}</p>
         )}
-        <span><b>Type:</b> {result.waste_type}</span>
+        <span>
+          <b>Type:</b> {result.waste_type}
+        </span>
         <br />
         <span>
           {result.properties.blk} {result.properties.road}

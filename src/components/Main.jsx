@@ -145,7 +145,6 @@ class Main extends React.Component {
     formData.append("file", this.state.imageFile);
     axios({
       method: "post",
-      // url: `${PREDICTION_API_URL}/predict`,
       url: `${PREDICTION_API_URL}/predict`,
       data: formData,
       config: { headers: { "Content-Type": "multipart/form-data" } }
@@ -193,7 +192,7 @@ class Main extends React.Component {
         </div>
         <div className="map-div-container">
           <div className="topbar">
-            <i className="trashy-logo"></i>
+            <i className="trashy-logo" />
           </div>
           <div className="map-body">
             <ReactMapGL
@@ -215,14 +214,14 @@ class Main extends React.Component {
           </div>
           <dl className="legend">
             Legend
-            <dt className="recycling"></dt>
-              <dd>Recycling bins</dd>
-            <dt className="electronic-waste"></dt>
-              <dd>Electronic waste</dd>
-            <dt className="cash-for-trash"></dt>
-              <dd>Cash for trash</dd>
-            <dt className="second-hand"></dt>
-              <dd>2nd hand goods</dd>
+            <dt className="recycling" />
+            <dd>Recycling bins</dd>
+            <dt className="electronic-waste" />
+            <dd>Electronic waste</dd>
+            <dt className="cash-for-trash" />
+            <dd>Cash for trash</dd>
+            <dt className="second-hand" />
+            <dd>2nd hand goods</dd>
           </dl>
         </div>
 
@@ -232,14 +231,21 @@ class Main extends React.Component {
           className="upload-modal"
           // overlayClassName="modal--overlay"
         >
-          <button className="btn-close-modal" onClick={() => this.props.setModalVisibility(false)}></button>
-          <div className='upload-form'>
-            <label htmlFor='fileUpload' className="btn-choose-file">
+          <button
+            className="btn-close-modal"
+            onClick={() => this.props.setModalVisibility(false)}
+          />
+          <div className="upload-form">
+            <label htmlFor="fileUpload" className="btn-choose-file">
               CHOOSE FILE
             </label>
-            <span id='fileSelected' className="selected-file">{(this.state.imageFile === null)? 'No file chosen': this.state.imageFile.name}</span>
+            <span id="fileSelected" className="selected-file">
+              {this.state.imageFile === null
+                ? "No file chosen"
+                : this.state.imageFile.name}
+            </span>
             <input
-              id='fileUpload'
+              id="fileUpload"
               type="file"
               onChange={this.fileFieldHandler.bind(this)}
             />
