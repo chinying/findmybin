@@ -12,7 +12,7 @@ import Autocomplete from "react-autocomplete";
 import { matchTerm } from "@/utils/textMatch";
 
 import { closestPoints } from "@/utils/computeDistances";
-import "@/styles/main.css";
+import "@/styles/main.scss";
 import "@/styles/input.css";
 
 /* cannot be destructured as webpack plugin only

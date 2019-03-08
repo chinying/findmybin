@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import ResultItem from "./ResultItem";
 
-import "@/styles/main.css";
+import "@/styles/main.scss";
 import "@/styles/input.css";
 
 const mapStateToProps = state => {

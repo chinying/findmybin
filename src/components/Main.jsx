@@ -14,7 +14,7 @@ import SearchBox from "@/components/SearchBox";
 import Loading from "@/components/Loading";
 import ReactModal from "react-modal";
 
-import "@/styles/main.css";
+import "@/styles/main.scss";
 import "@/styles/input.css";
 
 /* cannot be destructured as webpack plugin only
