@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import React from "react";
 import { connect } from "react-redux";
 
-import DeckGL from "deck.gl";
+import DeckGL, { MapController } from "deck.gl";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 
 import { matchTerm } from "@/utils/textMatch";
@@ -199,9 +199,11 @@ class Main extends React.Component {
               {...this.props.viewport}
               mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
               onViewStateChange={this.props.updateViewport}
+              touchRotate={true}
             >
               <DeckGL
                 initialViewState={initViewState}
+                // controller={{type: MapController, touchRotate: true}}
                 controller={true}
                 layers={this.props.layers}
                 viewState={this.props.viewport}
