@@ -35,13 +35,13 @@ Run `./transform.sh` to clean up and merge the geojson files.
 [] webpack config for prod
 
 ### Deck.gl
-[x] read all bins from geojson and dump on map as is  
-[] heatmap?  
-[x] calculate distance  
-[] click data point to pan + show info about data point  
-[] hack together something to show route on map to selected data point
+- [x] read all bins from geojson and dump on map as is  
+- [ ] heatmap?  
+- [x] calculate distance  
+- [ ] click data point to pan + show info about data point  
+- [ ] hack together something to show route on map to selected data point
 
 ## Refactor
-[x] Add redux - mostly cleaned up now
-[x] Lint - prettier used
-[] Produce a better system for classification
+- [x] Add redux - mostly cleaned up now
+- [x] Lint - prettier used
+- [ ] Produce a better system for classification
