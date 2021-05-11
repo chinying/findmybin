@@ -14,7 +14,7 @@
     "axios": "^0.21.1",
     "deck.gl": "^6.3.6",
     "dotenv": "^6.2.0",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.21",
     "react": "^16.7.0",
     "react-autocomplete": "^1.8.1",
     "react-dom": "^16.7.0",
